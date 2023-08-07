@@ -5,12 +5,12 @@
 #include "Utilities.h"
 #include "Input.h"
 #include "Vertex.h"
+#include "Version.h"
 #include "rendering/OpenGLDraw.h"
 #include "rendering/OpenGLLoader.h"
 #include "rendering/ShaderLoader.h"
 #include <iostream>
 #include <vector>
-#include <random>
 
 int main(int argc, char** argv)
 {
@@ -25,9 +25,10 @@ int main(int argc, char** argv)
         std::cout << "GLFW failed to initialize. Quitting\n";
         return -1;
     }
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     // create window
     GLFWwindow* window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, extract_version(argv[0]), nullptr, nullptr);
@@ -44,11 +45,12 @@ int main(int argc, char** argv)
         std::cout << "Failed to initialize GLAD" << std::endl;
         return -1;
     }
+    print_GL_info();
     glfwSwapInterval(1);
 
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     const char* vertex_shader =
-        "#version 330 core                      \n"
+        "#version 430 core                      \n"
         "layout (location = 0) in vec3 m_pos;   \n"
         "layout (location = 1) in vec3 m_col;   \n"
         "out vec3 our_color;                    \n"
@@ -57,7 +59,7 @@ int main(int argc, char** argv)
         "  our_color = m_col;                   \n"
         "}";
     const char* fragment_shader =
-        "#version 330 core                      \n"
+        "#version 430 core                      \n"
         "out vec4 frag_color;                   \n"
         "in vec3 our_color;                     \n"
         "void main() {                          \n"

@@ -136,6 +136,7 @@
     <ClInclude Include="rendering\OpenGLLoader.h" />
     <ClInclude Include="rendering\ShaderLoader.h" />
     <ClInclude Include="Utilities.h" />
+    <ClInclude Include="Version.h" />
     <ClInclude Include="Vertex.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
