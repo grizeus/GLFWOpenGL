@@ -11,6 +11,8 @@
 #include "rendering/ShaderLoader.h"
 #include <iostream>
 #include <vector>
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 
 int main(int argc, char** argv)
 {
@@ -49,6 +51,54 @@ int main(int argc, char** argv)
     glfwSwapInterval(1);
 
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+
+    // generate texture
+    GLuint texture;
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+
+    // texture options
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    // load texture raw data
+    int width, height, nr_col_channels;
+    unsigned char* text_data = stbi_load("media\container.jpg", &width, &height, &nr_col_channels, 0);
+
+    // bound raw data to texture
+    if (text_data)
+    {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, text_data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
+    else
+        printf("Failed to load texture\n");
+
+    stbi_image_free(text_data);
+
+    std::vector<draw_details> container;
+    {
+        std::vector<text_vertex> obj_pts;
+        obj_pts.emplace_back(0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f);
+        obj_pts.emplace_back(0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f);
+        obj_pts.emplace_back(-0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f);
+        obj_pts.emplace_back(-0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f);
+
+        std::vector<uint32_t> elem = { 0, 1, 2, 3 };
+
+        container.push_back(upload_mesh(obj_pts, elem));
+    }
+
+    float vertices[] = {
+        // positions          // colors           // texture coords
+         0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   // top right
+         0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,   // bottom right
+        -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   // bottom left
+        -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f    // top left 
+    };
+
     const char* vertex_shader =
         "#version 430 core                      \n"
         "layout (location = 0) in vec3 m_pos;   \n"
@@ -65,11 +115,12 @@ int main(int argc, char** argv)
         "void main() {                          \n"
         "  frag_color = vec4(our_color, 1.f);   \n"
         "}";
+
     unsigned int main_shader = load_shader(vertex_shader, fragment_shader);
     glClearColor(.2f, .2f, .6f, .0f);
-    std::vector<draw_details> our_draw_details;
+    std::vector<draw_details> our_triangle;
     {
-        std::vector<vertex> obj_pts;
+        std::vector<triangle_vertex> obj_pts;
         obj_pts.emplace_back(.5f, -.5f, 0.f, 1.f, 0.f, 0.f);
         obj_pts.emplace_back(-.5f, -.5f, 0.f, 0.f, 1.f, 0.f);
 		obj_pts.emplace_back(0.f, .5f, 0.f, 0.f, 0.f, 1.f);
@@ -77,7 +128,7 @@ int main(int argc, char** argv)
 		std::vector<uint32_t> elem = { 0, 1, 2 };
 
 		// UPLOAD DATA TO GRAPHICS CARD
-		our_draw_details.push_back(upload_mesh(obj_pts, elem));
+		our_triangle.push_back(upload_mesh(obj_pts, elem));
     }
 
     while (!glfwWindowShouldClose(window))
@@ -86,13 +137,13 @@ int main(int argc, char** argv)
         glClear(GL_COLOR_BUFFER_BIT);
 
         glUseProgram(main_shader);
-        draw(our_draw_details);
+        draw(our_triangle);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
     // remove data from GPU
-    unload_mesh(our_draw_details);
+    unload_mesh(our_triangle);
     glfwDestroyWindow(window);
 
     glfwTerminate();
