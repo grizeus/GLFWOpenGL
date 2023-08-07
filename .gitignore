@@ -363,4 +363,7 @@ MigrationBackup/
 FodyWeavers.xsd
 
 # log file
-log.*
+log.txt
+
+# gitattributes
+.gitattributes
