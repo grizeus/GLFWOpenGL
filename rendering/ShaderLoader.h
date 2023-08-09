@@ -52,11 +52,11 @@ static GLuint load_shader(const char* vertex_shader, const char* fragment_shader
 		printf("%s\n", &program_error_message[0]);
 	}
 
-	glDetachShader(program_ID, vertex_shader_ID);
-	glDetachShader(program_ID, fragment_shader_ID);
-
 	glDeleteShader(vertex_shader_ID);
 	glDeleteShader(fragment_shader_ID);
+
+	glDetachShader(program_ID, vertex_shader_ID);
+	glDetachShader(program_ID, fragment_shader_ID);
 
 	return program_ID;
 }

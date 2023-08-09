@@ -3,37 +3,6 @@
 #include <vector>
 #include "../Vertex.h"
 
-static draw_details upload_mesh(const std::vector<triangle_vertex>& verts, const std::vector<uint32_t> elem)
-{
-	if (verts.empty() || elem.empty())
-		throw("empty vector");
-
-	uint32_t vao, vbo, ebo;
-
-	glGenVertexArrays(1, &vao);
-	glBindVertexArray(vao);
-
-	glGenBuffers(1, &vbo);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferData(GL_ARRAY_BUFFER, verts.size() * sizeof(triangle_vertex), &verts[0], GL_STATIC_DRAW); // or we can use verts.data()
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(triangle_vertex), (const void*)0);
-	glEnableVertexAttribArray(0);
-
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(triangle_vertex), (const void*)(3 * sizeof(float)));
-	glEnableVertexAttribArray(1);
-
-	glGenBuffers(1, &ebo);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, elem.size() * sizeof(uint32_t), &elem[0], GL_STATIC_DRAW); // or we can use elem.data()
-
-	glBindVertexArray(0);
-	glDeleteBuffers(1, &vbo);
-	glDeleteBuffers(1, &ebo);
-
-	return draw_details(vao, elem.size());
-}
-
-// TODO create overload for this type meshes (text_vertex)
 //static draw_details upload_mesh(const std::vector<triangle_vertex>& verts, const std::vector<uint32_t> elem)
 //{
 //	if (verts.empty() || elem.empty())
@@ -61,9 +30,52 @@ static draw_details upload_mesh(const std::vector<triangle_vertex>& verts, const
 //	glDeleteBuffers(1, &vbo);
 //	glDeleteBuffers(1, &ebo);
 //
-//	return draw_details(vao, elem.size());
+//	return draw_details(vao, static_cast<uint32_t>(elem.size()));
 //}
 
+draw_details upload_mesh(const GLfloat* verts, const GLfloat* colors, const int v_count,
+  const GLuint* elems, const int e_count)
+{
+	GLuint vbo_handles[2];
+	glGenBuffers(2, vbo_handles);
+	GLuint position_buffer_handle = vbo_handles[0];
+	GLuint color_buffer_handle    = vbo_handles[1];
+
+	glBindBuffer(GL_ARRAY_BUFFER, position_buffer_handle);
+	glBufferData(GL_ARRAY_BUFFER, v_count * sizeof(GLfloat), verts, GL_STATIC_DRAW);
+
+
+	glBindBuffer(GL_ARRAY_BUFFER, color_buffer_handle);
+	glBufferData(GL_ARRAY_BUFFER, v_count * sizeof(GLfloat), colors, GL_STATIC_DRAW);
+
+	GLuint vao_handle;
+	glGenVertexArrays(1, &vao_handle);
+	glBindVertexArray(vao_handle);
+
+	glEnableVertexAttribArray(0); // pos
+	glEnableVertexAttribArray(1); // col
+
+	glBindVertexBuffer(0, position_buffer_handle, 0, sizeof(GLfloat) * 3);
+	glBindVertexBuffer(1, color_buffer_handle, 0, sizeof(GLfloat) * 3);
+
+	glVertexAttribFormat(0, 3, GL_FLOAT, GL_FALSE, 0);
+	glVertexAttribBinding(0, 0);
+
+	glVertexAttribFormat(1, 3, GL_FLOAT, GL_FALSE, 0);
+	glVertexAttribBinding(1, 1);
+
+	GLuint elem_handle;
+	glGenBuffers(1, &elem_handle);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elem_handle);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, e_count * sizeof(GLuint), elems, GL_STATIC_DRAW);
+
+	glBindVertexArray(0);
+	glDeleteBuffers(2, vbo_handles);
+	glDeleteBuffers(1, &elem_handle);
+
+	return draw_details(vao_handle, static_cast<uint32_t>(e_count));
+
+}
 
 static void unload_mesh(std::vector<draw_details>& details)
 {

@@ -132,6 +132,7 @@
   <ItemGroup>
     <ClInclude Include="Callbacks.h" />
     <ClInclude Include="Input.h" />
+    <ClInclude Include="Query.h" />
     <ClInclude Include="rendering\OpenGLDraw.h" />
     <ClInclude Include="rendering\OpenGLLoader.h" />
     <ClInclude Include="rendering\ShaderLoader.h" />
