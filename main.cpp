@@ -1,6 +1,9 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
 #include "Callbacks.h"
 #include "Utilities.h"
 #include "Input.h"
@@ -52,25 +55,10 @@ int main(int argc, char** argv)
     glfwSetWindowCloseCallback(window, glfw_window_close_callback);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
-    const char* vertex_shader =
-        "#version 430 core                         \n"
-        "layout(location = 0) in vec3 vertPos;     \n"
-        "layout(location = 1) in vec3 vertColor;   \n"
-        "layout(location = 0) out vec4 fragColor;  \n"
-        "void main(){                              \n"
-        "  fragColor = vec4(vertColor, 1.0);       \n"
-        "  gl_Position = vec4(vertPos, 1.0);       \n"
-        "}";
+    std::string vertex_shader = read_to_string("shaders\\VertexShader.glsl");
+    std::string fragment_shader = read_to_string("shaders\\FragmentShader.glsl");
 
-    const char* fragment_shader =
-        "#version 430 core                          \n"
-        "layout(location = 0) in vec4 fragColor;    \n"
-        "out vec4 color;                            \n"
-        "void main() {                              \n"
-        "  color = fragColor;                       \n"
-        "}";
-
-    unsigned int main_shader = load_shader(vertex_shader, fragment_shader);
+    unsigned int main_shader = load_shader(vertex_shader.c_str(), fragment_shader.c_str());
     glClearColor(0.3f, 0.3f, 0.9f, 0.f);
 
     std::vector<draw_details> triangle;
@@ -90,14 +78,25 @@ int main(int argc, char** argv)
         elems, sizeof(elems) / sizeof(elems[0])));
     
     query_input_attribs(main_shader);
+    query_uniforms(main_shader);
 
+    double prev_time = glfwGetTime();
     while (!glfwWindowShouldClose(window))
     {
+        double current_time = glfwGetTime();
+        double dt = current_time - prev_time;
+        prev_time = current_time;
+
         process_input(window);
         glClear(GL_COLOR_BUFFER_BIT);
 
-
         glUseProgram(main_shader);
+        glm::mat4 final_model_matrix = glm::mat4(1);
+        final_model_matrix = glm::translate(final_model_matrix, glm::vec3(sin((float)glfwGetTime()) / 2, cos((float)glfwGetTime()) / 2, 0));
+        final_model_matrix = glm::rotate(final_model_matrix, (float)glfwGetTime(), glm::vec3(0.f, 1.f, 0.f));
+        final_model_matrix = glm::scale(final_model_matrix, glm::vec3(.5));
+        GLuint location = glGetUniformLocation(main_shader, "uModelMatrix");
+        glUniformMatrix4fv(location, 1, GL_FALSE, &final_model_matrix[0][0]);
         draw(triangle);
 
         glfwSwapBuffers(window);

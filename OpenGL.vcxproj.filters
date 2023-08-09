@@ -60,7 +60,7 @@
     <None Include="shaders\FragmentShader.glsl">
       <Filter>GLSL</Filter>
     </None>
-    <None Include="shaders\VetrexShader.glsl">
+    <None Include="shaders\VertexShader.glsl">
       <Filter>GLSL</Filter>
     </None>
   </ItemGroup>

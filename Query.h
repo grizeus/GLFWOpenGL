@@ -52,7 +52,8 @@ const char* get_type_string(GLenum type)
 
 }
 
-inline void query_input_attribs(const GLuint& handle) {
+inline void query_input_attribs(const GLuint& handle)
+{
     printf("-----ATTRIBUTES(shaderprog:%i)-----\n", handle);
     // method 1
     GLint num_attribs;
@@ -67,6 +68,30 @@ inline void query_input_attribs(const GLuint& handle) {
         GLint nameBufSize = results[0] + 1;
         char* name = new char[nameBufSize];
         glGetProgramResourceName(handle, GL_PROGRAM_INPUT, i, nameBufSize, NULL, name);
+        printf("%-5d %s (%s)\n", results[2], name, get_type_string(results[1]));
+        delete[] name;
+    }
+}
+
+inline void query_uniforms(const GLuint& handle)
+{
+    printf("-----UNIFORMS-----\n");
+
+    GLint numUniforms = 0;
+    glGetProgramInterfaceiv(handle, GL_UNIFORM, GL_ACTIVE_RESOURCES, &numUniforms);
+    //  2. Loop through each uniform index and query for the length of the name, the type, the
+      //  location and the block index:
+    GLenum properties[] = { GL_NAME_LENGTH, GL_TYPE, GL_LOCATION, GL_BLOCK_INDEX };
+    printf("Active uniforms:\n");
+    for (int i = 0; i < numUniforms; ++i) 
+    {
+        GLint results[4];
+        glGetProgramResourceiv(handle, GL_UNIFORM, i, 4, properties, 4, NULL, results);
+        if (results[3] != -1)
+            continue; // Skip uniforms in blocks
+        GLint nameBufSize = results[0] + 1;
+        char* name = new char[nameBufSize];
+        glGetProgramResourceName(handle, GL_UNIFORM, i, nameBufSize, NULL, name);
         printf("%-5d %s (%s)\n", results[2], name, get_type_string(results[1]));
         delete[] name;
     }

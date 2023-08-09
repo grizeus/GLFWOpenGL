@@ -1,9 +1,10 @@
 #pragma once
 #include <fstream>
+#include <sstream>
 #include <string>
 
 // display file name to window header
-static const char* extract_version(const char* full)
+inline const char* extract_version(const char* full)
 {
     std::string p1 = full;
     static std::string p2;
@@ -16,7 +17,7 @@ static const char* extract_version(const char* full)
 }
 
 #ifdef _DEBUG
-static void write_log(const char* msg)
+inline void write_log(const char* msg)
 {
     std::ofstream logs;
     logs.open("log.txt", std::ofstream::app | std::ofstream::out);
@@ -24,6 +25,26 @@ static void write_log(const char* msg)
     logs.close();
 }
 #else
-static void write_log(const char* msg)
+inline void write_log(const char* msg)
 { }
 #endif
+
+inline void read_to_string(const char* path, std::string& out)
+{
+    std::ifstream input_file_stream(path);
+    if(!input_file_stream.is_open())
+        throw ("Invalid file path!");
+    std::stringstream data;
+    data << input_file_stream.rdbuf();
+    out = data.str();
+}
+
+inline std::string read_to_string(const char* path)
+{
+    std::ifstream input_file_stream(path);
+    if(!input_file_stream.is_open())
+        throw ("Invalid file path!");
+    std::stringstream data;
+    data << input_file_stream.rdbuf();
+    return data.str();
+}
