@@ -63,7 +63,7 @@ int main(int argc, char** argv)
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 
     std::string vertex_shader = read_to_string("shaders\\2DVertexShader.glsl");
-    std::string fragment_shader = read_to_string("shaders\\PizzaFragShader.glsl");
+    std::string fragment_shader = read_to_string("shaders\\CursorFragShader.glsl");
     main_shader = new GLSL_shader(vertex_shader.c_str(), fragment_shader.c_str());
     
     query_input_attribs(main_shader->get_handle());

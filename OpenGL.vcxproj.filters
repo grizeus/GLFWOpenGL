@@ -21,6 +21,9 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="shaders\Shader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Callbacks.h">
@@ -72,7 +75,7 @@
     <None Include="shaders\2DVertexShader.glsl">
       <Filter>GLSL</Filter>
     </None>
-    <None Include="shaders\PizzaFragShader.glsl">
+    <None Include="shaders\CursorFragShader.glsl">
       <Filter>GLSL</Filter>
     </None>
   </ItemGroup>
