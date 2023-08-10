@@ -82,8 +82,9 @@ draw_strip_details upload_mesh(const GLfloat* verts, const GLuint v_count)
 	glGenVertexArrays(1, &vao_handle);
 	glBindVertexArray(vao_handle);
 
+
 	GLuint vbo_handle;
-	glGenVertexArrays(1, &vbo_handle);
+	glGenBuffers(1, &vbo_handle);
 	GLuint position_buffer_handle = vbo_handle;
 	glBindBuffer(GL_ARRAY_BUFFER, position_buffer_handle);
 	glBufferData(GL_ARRAY_BUFFER, v_count * sizeof(GLfloat), verts, GL_STATIC_DRAW);
@@ -92,9 +93,11 @@ draw_strip_details upload_mesh(const GLfloat* verts, const GLuint v_count)
 	glBindVertexBuffer(0, position_buffer_handle, 0, sizeof(GLfloat) * 2);
 	glVertexAttribFormat(0, 2, GL_FLOAT, GL_FALSE, 0);
 	glVertexAttribBinding(0, 0);  // map to shader
-	
+
 	glBindVertexArray(0);
 	glDeleteBuffers(1, &vbo_handle);
+
+	std::cout << "draw strip:\n" << " -vao: " << vao_handle << "\n -count: " << v_count << '\n';
 
 	return draw_strip_details(vao_handle, v_count);
 }
