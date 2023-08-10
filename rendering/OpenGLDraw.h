@@ -13,12 +13,12 @@ void draw(const std::vector<draw_details>& details)
 	glBindVertexArray(0);
 }
 
-//static void text_draw(const std::vector<draw_details>& details)
-//{
-//	for (const auto& d : details)
-//	{
-//		glBindVertexArray(d.vao);
-//		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
-//	}
-//	glBindVertexArray(0);
-//}
+void strip_draw(const std::vector<draw_strip_details>& details)
+{
+	for (const auto& d : details)
+	{
+		glBindVertexArray(d.vao);
+		glDrawArrays(GL_TRIANGLE_STRIP, 0, d.vert_count);
+	}
+	glBindVertexArray(0);
+}
