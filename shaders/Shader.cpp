@@ -79,7 +79,7 @@ GLuint GLSL_shader::create_shader(const char* vert, const char* frag)
     m_handle = load_shader(vert, frag);
 }
 
-inline GLint GLSL_shader::get_uniform_ID(const char* name)
+GLint GLSL_shader::get_uniform_ID(const char* name)
 {
     loc = glGetUniformLocation(m_handle, name);
     if (loc >= 0)

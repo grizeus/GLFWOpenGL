@@ -109,3 +109,12 @@ void unload_mesh(std::vector<draw_details>& details)
 	}
 	details.clear();
 }
+
+void unload_mesh(std::vector<draw_strip_details>& details)
+{
+	for (auto& d : details)
+	{
+		glDeleteBuffers(1, &d.vao);
+	}
+	details.clear();
+}

@@ -1,17 +1,15 @@
 #version 430
 out vec4 fragColor;
-// uniform vec2 uResolution;
+uniform vec2 uMousePos;
 
 void main() {
-	vec3 color = vec3(0);
-	
-	if (gl_FragCoord.x > 700) {
-		color.x = .7;
-	}
+	float radius = 10;
 
-	if (gl_FragCoord.y > 500) {
-		color.y = .7;
-	}
+	float dist = distance(uMousePos, gl_FragCoord.xy);
+	if (dist > radius)
+		discard;
+
+	vec3 color = vec3(1);
 
 	fragColor = vec4(color, 1.0);
 }

@@ -2,7 +2,7 @@
 #include <glad/glad.h>
 #include <vector>
 
-static GLuint load_shader(const char* vertex_shader, const char* fragment_shader) {
+inline GLuint load_shader(const char* vertex_shader, const char* fragment_shader) {
 
 	// Create the shaders
 	GLuint vertex_shader_ID = glCreateShader(GL_VERTEX_SHADER);

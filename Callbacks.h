@@ -5,6 +5,8 @@
 #include "shaders/Shader.h"
 #include <iostream>
 
+extern GLSL_shader* main_shader;
+
 void glfw_error_callback(int error, const char* description)
 {
     write_log(description);
@@ -25,9 +27,9 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 
 void glfw_mouse_movement_callback(GLFWwindow* window, double x, double y)
 {
-    //main_shader->use();
+    main_shader->use();
     int width, height;
     glfwGetWindowSize(window, &width, &height);
-    //main_shader->set_vec2("uMousePos", glm::vec2(x, height - y));
+    main_shader->set_vec2("uMousePos", glm::vec2(x, height - y));
     std::cout << "x: " << x << " y: " << y << '\n';
 }

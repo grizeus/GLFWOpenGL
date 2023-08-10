@@ -1,6 +1,6 @@
 #pragma once
 
-static void process_input(GLFWwindow* window)
+void process_input(GLFWwindow* window)
 {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 	{
