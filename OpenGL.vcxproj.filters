@@ -53,6 +53,9 @@
     <ClInclude Include="DrawDetails.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="shaders\Shader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="media\container.jpg">
@@ -64,6 +67,12 @@
       <Filter>GLSL</Filter>
     </None>
     <None Include="shaders\VertexShader.glsl">
+      <Filter>GLSL</Filter>
+    </None>
+    <None Include="shaders\2DVertexShader.glsl">
+      <Filter>GLSL</Filter>
+    </None>
+    <None Include="shaders\PizzaFragShader.glsl">
       <Filter>GLSL</Filter>
     </None>
   </ItemGroup>

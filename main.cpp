@@ -11,6 +11,7 @@
 #include "DrawDetails.h"
 #include "Version.h"
 #include "Query.h"
+#include "shaders/Shader.h"
 #include "rendering/OpenGLDraw.h"
 #include "rendering/OpenGLLoader.h"
 #include "rendering/ShaderLoader.h"
@@ -56,13 +57,26 @@ int main(int argc, char** argv)
     glfwSetWindowCloseCallback(window, glfw_window_close_callback);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
-    std::string vertex_shader = read_to_string("shaders\\VertexShader.glsl");
-    std::string fragment_shader = read_to_string("shaders\\FragmentShader.glsl");
+    /*std::string vertex_shader = read_to_string("shaders\\VertexShader.glsl");
+    std::string fragment_shader = read_to_string("shaders\\FragmentShader.glsl");*/
 
-    unsigned int main_shader = load_shader(vertex_shader.c_str(), fragment_shader.c_str());
+    std::string vertex_shader = read_to_string("shaders\\2DVertexShader.glsl");
+    std::string fragment_shader = read_to_string("shaders\\PizzaFragShader.glsl");
+
+    GLSL_shader* main_shader = new GLSL_shader(vertex_shader.c_str(), fragment_shader.c_str());
+    // unsigned int main_shader = load_shader(vertex_shader.c_str(), fragment_shader.c_str());
     glClearColor(0.3f, 0.3f, 0.9f, 0.f);
 
-    std::vector<draw_details> triangle;
+    //std::vector<draw_details> triangle;
+    std::vector<draw_strip_details> strip;
+
+    const GLfloat strip_pos_data[] = {
+        -1, 1,
+        -1, -1,
+        1, 1,
+        1, -1
+    };
+
     const float position_data[] = {
         -0.8f, -0.8f, 0.0f,
          0.8f, -0.8f, 0.0f,
@@ -74,12 +88,14 @@ int main(int argc, char** argv)
         0.0f, 1.0f, 0.0f,
         0.0f, 0.0f, 1.0f
     };
+
+    strip.push_back(upload_mesh(strip_pos_data, sizeof(strip_pos_data) / sizeof(strip_pos_data[0])));
     const GLuint elems[] = { 0, 1, 2 };
-    triangle.push_back(upload_mesh(position_data, color_data, sizeof(position_data) / sizeof(position_data[0]),
-        elems, sizeof(elems) / sizeof(elems[0])));
+    /*triangle.push_back(upload_mesh(position_data, color_data, sizeof(position_data) / sizeof(position_data[0]),
+        elems, sizeof(elems) / sizeof(elems[0])));*/
     
-    query_input_attribs(main_shader);
-    query_uniforms(main_shader);
+    query_input_attribs(main_shader->GetHandle());
+    query_uniforms(main_shader->GetHandle());
 
     double prev_time = glfwGetTime();
     while (!glfwWindowShouldClose(window))
@@ -91,21 +107,22 @@ int main(int argc, char** argv)
         process_input(window);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glUseProgram(main_shader);
-        glm::mat4 final_model_matrix = glm::mat4(1);
+        main_shader->Use();
+        /*glm::mat4 final_model_matrix = glm::mat4(1);
         final_model_matrix = glm::translate(final_model_matrix, glm::vec3(sin((float)glfwGetTime()) / 2, cos((float)glfwGetTime()) / 2, 0));
         final_model_matrix = glm::rotate(final_model_matrix, (float)glfwGetTime(), glm::vec3(0.f, 1.f, 0.f));
         final_model_matrix = glm::scale(final_model_matrix, glm::vec3(.5));
         GLuint location = glGetUniformLocation(main_shader, "uModelMatrix");
-        glUniformMatrix4fv(location, 1, GL_FALSE, &final_model_matrix[0][0]);
-        draw(triangle);
+        glUniformMatrix4fv(location, 1, GL_FALSE, &final_model_matrix[0][0]);*/
+        strip_draw(strip);
+        //draw(triangle);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
 
     // remove data from GPU
-    unload_mesh(triangle);
+    // unload_mesh(strip);
     glfwDestroyWindow(window);
 
     glfwTerminate();
