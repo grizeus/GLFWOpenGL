@@ -50,6 +50,9 @@
     <ClInclude Include="Query.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="DrawDetails.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="media\container.jpg">

@@ -131,6 +131,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Callbacks.h" />
+    <ClInclude Include="DrawDetails.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="Query.h" />
     <ClInclude Include="rendering\OpenGLDraw.h" />

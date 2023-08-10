@@ -15,12 +15,3 @@ struct triangle_vertex
 	float pos[3];	// x y z
 	float color[3];	// r g b
 };
-
-struct draw_details
-{
-	draw_details(GLuint v, GLuint e)
-		: vao(v), num_elements(e)
-	{}
-	GLuint vao = 0;
-	GLuint num_elements = 0;
-};

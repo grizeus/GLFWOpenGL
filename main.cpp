@@ -8,6 +8,7 @@
 #include "Utilities.h"
 #include "Input.h"
 #include "Vertex.h"
+#include "DrawDetails.h"
 #include "Version.h"
 #include "Query.h"
 #include "rendering/OpenGLDraw.h"
