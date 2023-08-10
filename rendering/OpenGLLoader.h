@@ -3,7 +3,7 @@
 #include <vector>
 #include "../Vertex.h"
 
-//static draw_details upload_mesh(const std::vector<triangle_vertex>& verts, const std::vector<uint32_t> elem)
+//draw_details upload_mesh(const std::vector<triangle_vertex>& verts, const std::vector<uint32_t> elem)
 //{
 //	if (verts.empty() || elem.empty())
 //		throw("empty vector");
@@ -77,7 +77,7 @@ draw_details upload_mesh(const GLfloat* verts, const GLfloat* colors, const int 
 
 }
 
-static void unload_mesh(std::vector<draw_details>& details)
+void unload_mesh(std::vector<draw_details>& details)
 {
 	for (auto& d : details)
 	{

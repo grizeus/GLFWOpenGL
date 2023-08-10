@@ -49,7 +49,6 @@ const char* get_type_string(GLenum type)
     default:
         return "?";
     }
-
 }
 
 inline void query_input_attribs(const GLuint& handle)
