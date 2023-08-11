@@ -101,16 +101,9 @@ draw_strip_details upload_mesh(const GLfloat* verts, const GLuint v_count)
 
 	return draw_strip_details(vao_handle, v_count);
 }
-void unload_mesh(std::vector<draw_details>& details)
-{
-	for (auto& d : details)
-	{
-		glDeleteBuffers(1, &d.vao);
-	}
-	details.clear();
-}
 
-void unload_mesh(std::vector<draw_strip_details>& details)
+template <typename T>
+void unload_mesh(std::vector<T>& details)
 {
 	for (auto& d : details)
 	{

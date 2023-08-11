@@ -19,7 +19,7 @@ inline GLuint load_shader(const char* vertex_shader, const char* fragment_shader
 	glGetShaderiv(vertex_shader_ID, GL_COMPILE_STATUS, &result);
 	glGetShaderiv(vertex_shader_ID, GL_INFO_LOG_LENGTH, &info_log_length);
 	if (info_log_length > 0) {
-		std::vector<char> vertex_shader_error_message(info_log_length + 1);
+		std::vector<char> vertex_shader_error_message(info_log_length);
 		glGetShaderInfoLog(vertex_shader_ID, info_log_length, NULL, &vertex_shader_error_message[0]);
 		printf("%s\n", &vertex_shader_error_message[0]);
 	}
@@ -32,7 +32,7 @@ inline GLuint load_shader(const char* vertex_shader, const char* fragment_shader
 	glGetShaderiv(fragment_shader_ID, GL_COMPILE_STATUS, &result);
 	glGetShaderiv(fragment_shader_ID, GL_INFO_LOG_LENGTH, &info_log_length);
 	if (info_log_length > 0) {
-		std::vector<char> fragment_shader_error_message(info_log_length + 1);
+		std::vector<char> fragment_shader_error_message(info_log_length);
 		glGetShaderInfoLog(fragment_shader_ID, info_log_length, NULL, &fragment_shader_error_message[0]);
 		printf("%s\n", &fragment_shader_error_message[0]);
 	}
@@ -47,7 +47,7 @@ inline GLuint load_shader(const char* vertex_shader, const char* fragment_shader
 	glGetProgramiv(program_ID, GL_LINK_STATUS, &result);
 	glGetProgramiv(program_ID, GL_INFO_LOG_LENGTH, &info_log_length);
 	if (info_log_length > 0) {
-		std::vector<char> program_error_message(info_log_length + 1);
+		std::vector<char> program_error_message(info_log_length);
 		glGetProgramInfoLog(program_ID, info_log_length, NULL, &program_error_message[0]);
 		printf("%s\n", &program_error_message[0]);
 	}

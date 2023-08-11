@@ -66,19 +66,19 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <None Include="shaders\FragmentShader.glsl">
+    <None Include="shaders\frag_base.glsl">
       <Filter>GLSL</Filter>
     </None>
-    <None Include="shaders\VertexShader.glsl">
+    <None Include="shaders\vert_3d.glsl">
       <Filter>GLSL</Filter>
     </None>
-    <None Include="shaders\2DVertexShader.glsl">
+    <None Include="shaders\vert_2d.glsl">
       <Filter>GLSL</Filter>
     </None>
-    <None Include="shaders\CursorFragShader.glsl">
+    <None Include="shaders\frag_cursor.glsl">
       <Filter>GLSL</Filter>
     </None>
-    <None Include="shaders\SmoothFragShader.glsl">
+    <None Include="shaders\frag_demo.glsl">
       <Filter>GLSL</Filter>
     </None>
   </ItemGroup>
