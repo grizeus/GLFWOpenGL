@@ -78,5 +78,8 @@
     <None Include="shaders\CursorFragShader.glsl">
       <Filter>GLSL</Filter>
     </None>
+    <None Include="shaders\SmoothFragShader.glsl">
+      <Filter>GLSL</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -150,6 +150,7 @@
     <None Include="shaders\2DVertexShader.glsl" />
     <None Include="shaders\FragmentShader.glsl" />
     <None Include="shaders\CursorFragShader.glsl" />
+    <None Include="shaders\SmoothFragShader.glsl" />
     <None Include="shaders\VertexShader.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

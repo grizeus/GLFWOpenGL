@@ -18,7 +18,8 @@
 #include <iostream>
 #include <vector>
 
-GLSL_shader* main_shader;
+GLSL_shader* cursor_shader;
+GLSL_shader* overlay_shader;
 
 int main(int argc, char** argv)
 {
@@ -64,10 +65,17 @@ int main(int argc, char** argv)
 
     std::string vertex_shader = read_to_string("shaders\\2DVertexShader.glsl");
     std::string fragment_shader = read_to_string("shaders\\CursorFragShader.glsl");
-    main_shader = new GLSL_shader(vertex_shader.c_str(), fragment_shader.c_str());
-    
-    query_input_attribs(main_shader->get_handle());
-    query_uniforms(main_shader->get_handle());
+    cursor_shader = new GLSL_shader(vertex_shader.c_str(), fragment_shader.c_str());
+   
+    query_input_attribs(cursor_shader->get_handle());
+    query_uniforms(cursor_shader->get_handle());
+
+    fragment_shader = read_to_string("shaders\\SmoothFragShader.glsl");
+    overlay_shader = new GLSL_shader(vertex_shader.c_str(), fragment_shader.c_str());
+    query_input_attribs(overlay_shader->get_handle());
+    query_uniforms(overlay_shader->get_handle());
+    overlay_shader->use();
+    overlay_shader->set_vec2("uResolution", glm::vec2(WINDOW_WIDTH, WINDOW_HEIGHT));
 
     glClearColor(0.3f, 0.3f, 0.65f, 0.f);
     std::vector<draw_strip_details> strip;
@@ -86,7 +94,9 @@ int main(int argc, char** argv)
         process_input(window);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        main_shader->use();
+        overlay_shader->use();
+        strip_draw(strip);
+        cursor_shader->use();
         strip_draw(strip);
 
         glfwSwapBuffers(window);
