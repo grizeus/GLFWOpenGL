@@ -21,6 +21,11 @@
 std::unique_ptr<GLSL_shader> cursor_shader;
 std::unique_ptr<GLSL_shader> demo_shader;
 
+// camera vars
+float FOV = glm::radians(45.f);
+float NEAR = .1f;
+float FAR = 3000.f;
+
 int main(int argc, char** argv)
 {
     const int WINDOW_WIDTH = 800;
@@ -69,6 +74,8 @@ int main(int argc, char** argv)
    
     query_input_attribs(cursor_shader->get_handle());
     query_uniforms(cursor_shader->get_handle());
+    cursor_shader->use();
+    cursor_shader->set_float("uRadius", 16);
 
     vertex_shader = read_to_string("shaders\\vert_3d.glsl");
     fragment_shader = read_to_string("shaders\\frag_demo.glsl");
@@ -78,13 +85,10 @@ int main(int argc, char** argv)
     demo_shader->use();
     demo_shader->set_vec2("uResolution", glm::vec2(WINDOW_WIDTH, WINDOW_HEIGHT));
 
-    constexpr float FOV = glm::radians(45.f);
     float ASPECT_RATIO = static_cast<float>(WINDOW_WIDTH) / static_cast<float>(WINDOW_HEIGHT);
-    constexpr float NEAR = .1f;
-    constexpr float FAR = 3000.f;
     demo_shader->set_mat4("uProjectionMatrix", glm::perspective(FOV, ASPECT_RATIO, NEAR, FAR));
     glm::mat4 model_matrix(1.f);
-    model_matrix = glm::translate(model_matrix, glm::vec3(0, 0, -10));
+    model_matrix = glm::translate(model_matrix, glm::vec3(0, 0, -10)); // make camera smol
     demo_shader->set_mat4("uModelMatrix", model_matrix);
     glm::mat4 view_matrix(1);
     demo_shader->set_mat4("uViewMatrix", view_matrix);

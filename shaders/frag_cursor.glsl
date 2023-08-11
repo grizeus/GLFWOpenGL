@@ -1,20 +1,25 @@
 #version 430
 out vec4 fragColor;
 uniform vec2 uMousePos;
+uniform float uRadius;
 
 void main() {
-	float inner_radius = 2;
-	float outer_radius = 2;
-	float power = 0;
+	float color_val = 0;
 
-	float dist = distance(uMousePos, gl_FragCoord.xy);
-	if (dist > inner_radius + outer_radius)
-		discard;
-	else if (dist > inner_radius)
-		power = 0;
-	else
-		power = 1;
+  // skip 3 directional quadrents and part of the 4th quadrent
+  vec2 dir = gl_FragCoord.xy - uMousePos;
+  if (dir.x < 0 || dir.y > 0 || dir.x > -dir.y)
+    discard;
 
-	vec3 color = vec3(power);
-	fragColor = vec4(color, 1.0);
+  // color within radius of leftover directional quadrent
+  float dist = distance(uMousePos, gl_FragCoord.xy);
+  if (dist > uRadius)
+    discard;
+  else if (dist > uRadius)
+    color_val = 0;
+  else 
+    color_val = 1;
+
+  vec3 color = vec3(color_val);
+  fragColor = vec4(color, 1.0);
 }

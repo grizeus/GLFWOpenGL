@@ -7,7 +7,9 @@
 
 extern std::unique_ptr<GLSL_shader> cursor_shader;
 extern std::unique_ptr<GLSL_shader> demo_shader;
-
+extern float FOV;
+extern float NEAR;
+extern float FAR;
 
 void glfw_error_callback(int error, const char* description)
 {
@@ -26,10 +28,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
     write_log(size.c_str());
     glViewport(0, 0, width, height);
     demo_shader->use();
-    constexpr float FOV = glm::radians(45.f);
     float ASPECT_RATIO = static_cast<float>(width) / static_cast<float>(height);
-    constexpr float NEAR = .1f;
-    constexpr float FAR = 3000.f;
     demo_shader->set_mat4("uProjectionMatrix", glm::perspective(FOV, ASPECT_RATIO, NEAR, FAR));
     demo_shader->set_vec2("uResolution", glm::vec2(width, height));
 }
