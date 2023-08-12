@@ -51,7 +51,6 @@ void glfw_key_callback(GLFWwindow* window, int key, int scancode, int action, in
         glfwGetWindowSize(window, &width, &height);
         float ASPECT_RATIO = (float)width / (float)height;
         FOV += glm::radians(1.f);
-        std::cout << "FOV " << FOV << std::endl;
         demo_shader->set_mat4("uProjectionMatrix", glm::perspective(FOV, ASPECT_RATIO, NEAR, FAR));
     }
     else if (key == GLFW_KEY_EQUAL && action == GLFW_PRESS)
@@ -61,7 +60,6 @@ void glfw_key_callback(GLFWwindow* window, int key, int scancode, int action, in
         glfwGetWindowSize(window, &width, &height);
         float ASPECT_RATIO = (float)width / (float)height;
         FOV -= glm::radians(1.f);
-        std::cout << "FOV " << FOV << std::endl;
         demo_shader->set_mat4("uProjectionMatrix", glm::perspective(FOV, ASPECT_RATIO, NEAR, FAR));
     }
 }

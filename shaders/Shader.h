@@ -28,7 +28,7 @@ public:
 private:
 
     GLuint m_handle;
-    GLint loc;
+    GLint m_location;
 
     GLint get_uniform_ID(const char* name);
 };
