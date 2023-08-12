@@ -63,8 +63,9 @@ int main(int argc, char** argv)
     print_GL_info();
 
     glfwSetWindowCloseCallback(window, glfw_window_close_callback);
-    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    glfwSetFramebufferSizeCallback(window, glfw_framebuffer_size_callback);
     glfwSetCursorPosCallback(window, glfw_mouse_movement_callback);
+    glfwSetKeyCallback(window, glfw_key_callback);
 
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 

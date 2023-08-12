@@ -22,7 +22,7 @@ void glfw_window_close_callback(GLFWwindow* window)
     write_log("Window closed\n");
 }
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+void glfw_framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
     std::string size = "Window resized to " + std::to_string(width) + "x" + std::to_string(height) + " \n";
     write_log(size.c_str());
@@ -39,5 +39,29 @@ void glfw_mouse_movement_callback(GLFWwindow* window, double x, double y)
     int width, height;
     glfwGetWindowSize(window, &width, &height);
     cursor_shader->set_vec2("uMousePos", glm::vec2(x, height - y));
-    std::cout << "x: " << x << " y: " << y << '\n';
+    // std::cout << "x: " << x << " y: " << y << '\n';
+}
+
+void glfw_key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+    if (key == GLFW_KEY_MINUS && action == GLFW_PRESS)
+    {
+        demo_shader->use();
+        int width, height;
+        glfwGetWindowSize(window, &width, &height);
+        float ASPECT_RATIO = (float)width / (float)height;
+        FOV += glm::radians(1.f);
+        std::cout << "FOV " << FOV << std::endl;
+        demo_shader->set_mat4("uProjectionMatrix", glm::perspective(FOV, ASPECT_RATIO, NEAR, FAR));
+    }
+    else if (key == GLFW_KEY_EQUAL && action == GLFW_PRESS)
+    {
+        demo_shader->use();
+        int width, height;
+        glfwGetWindowSize(window, &width, &height);
+        float ASPECT_RATIO = (float)width / (float)height;
+        FOV -= glm::radians(1.f);
+        std::cout << "FOV " << FOV << std::endl;
+        demo_shader->set_mat4("uProjectionMatrix", glm::perspective(FOV, ASPECT_RATIO, NEAR, FAR));
+    }
 }

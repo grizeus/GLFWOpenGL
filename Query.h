@@ -75,7 +75,7 @@ inline void query_input_attribs(const GLuint& handle)
 
 inline void query_uniforms(const GLuint& handle)
 {
-    printf("-----UNIFORMS(%i)-----\n", handle);
+    printf("-----UNIFORMS(shaderprog:%i)-----\n", handle);
 
     GLint num_uniforms = 0;
     glGetProgramInterfaceiv(handle, GL_UNIFORM, GL_ACTIVE_RESOURCES, &num_uniforms);
