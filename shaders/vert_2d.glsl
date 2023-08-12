@@ -1,7 +1,7 @@
-#version 430
-layout (location = 1) in vec3 vertexColor;
-out vec3 fragColor;
+#version 330
+layout(location = 0) in vec3 vertexPosition_modelspace;
 void main()
 {
-	fragColor = vertexColor;
+	gl_Position.xyz = vertexPosition_modelspace;
+	gl_Position.w = 1.0;
 }
