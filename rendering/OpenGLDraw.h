@@ -8,7 +8,8 @@ void draw(const std::vector<draw_details>& details)
 	for (const auto& d : details)
 	{
 		glBindVertexArray(d.vao);
-		glDrawElements(GL_TRIANGLES, d.num_elements, GL_UNSIGNED_INT, nullptr);
+		//glDrawElements(GL_TRIANGLES, d.num_elements, GL_UNSIGNED_INT, nullptr);
+		glDrawArrays(GL_TRIANGLES, 0, d.num_elements);
 	}
 	glBindVertexArray(0);
 }
