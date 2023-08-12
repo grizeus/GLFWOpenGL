@@ -66,45 +66,49 @@ int main(int argc, char** argv)
 
     glClearColor(0.3f, 0.3f, 0.65f, 0.f);
     //std::vector<draw_details> cube;
-
     static const GLfloat g_vertex_buffer_data[] = {
-    -1.0f,-1.0f,-1.0f, // triangle 1 : begin
-    -1.0f,-1.0f, 1.0f,
-    -1.0f, 1.0f, 1.0f, // triangle 1 : end
-    1.0f, 1.0f,-1.0f, // triangle 2 : begin
-    -1.0f,-1.0f,-1.0f,
-    -1.0f, 1.0f,-1.0f, // triangle 2 : end
-    1.0f,-1.0f, 1.0f,
-    -1.0f,-1.0f,-1.0f,
-    1.0f,-1.0f,-1.0f,
-    1.0f, 1.0f,-1.0f,
-    1.0f,-1.0f,-1.0f,
-    -1.0f,-1.0f,-1.0f,
-    -1.0f,-1.0f,-1.0f,
-    -1.0f, 1.0f, 1.0f,
-    -1.0f, 1.0f,-1.0f,
-    1.0f,-1.0f, 1.0f,
-    -1.0f,-1.0f, 1.0f,
-    -1.0f,-1.0f,-1.0f,
-    -1.0f, 1.0f, 1.0f,
-    -1.0f,-1.0f, 1.0f,
-    1.0f,-1.0f, 1.0f,
-    1.0f, 1.0f, 1.0f,
-    1.0f,-1.0f,-1.0f,
-    1.0f, 1.0f,-1.0f,
-    1.0f,-1.0f,-1.0f,
-    1.0f, 1.0f, 1.0f,
-    1.0f,-1.0f, 1.0f,
-    1.0f, 1.0f, 1.0f,
-    1.0f, 1.0f,-1.0f,
-    -1.0f, 1.0f,-1.0f,
-    1.0f, 1.0f, 1.0f,
-    -1.0f, 1.0f,-1.0f,
-    -1.0f, 1.0f, 1.0f,
-    1.0f, 1.0f, 1.0f,
-    -1.0f, 1.0f, 1.0f,
-    1.0f,-1.0f, 1.0f
+       -1.0f, -1.0f, 0.0f,
+       1.0f, -1.0f, 0.0f,
+       0.0f,  1.0f, 0.0f,
     };
+    //static const GLfloat g_vertex_buffer_data[] = {
+    //-1.0f,-1.0f,-1.0f, // triangle 1 : begin
+    //-1.0f,-1.0f, 1.0f,
+    //-1.0f, 1.0f, 1.0f, // triangle 1 : end
+    //1.0f, 1.0f,-1.0f, // triangle 2 : begin
+    //-1.0f,-1.0f,-1.0f,
+    //-1.0f, 1.0f,-1.0f, // triangle 2 : end
+    //1.0f,-1.0f, 1.0f,
+    //-1.0f,-1.0f,-1.0f,
+    //1.0f,-1.0f,-1.0f,
+    //1.0f, 1.0f,-1.0f,
+    //1.0f,-1.0f,-1.0f,
+    //-1.0f,-1.0f,-1.0f,
+    //-1.0f,-1.0f,-1.0f,
+    //-1.0f, 1.0f, 1.0f,
+    //-1.0f, 1.0f,-1.0f,
+    //1.0f,-1.0f, 1.0f,
+    //-1.0f,-1.0f, 1.0f,
+    //-1.0f,-1.0f,-1.0f,
+    //-1.0f, 1.0f, 1.0f,
+    //-1.0f,-1.0f, 1.0f,
+    //1.0f,-1.0f, 1.0f,
+    //1.0f, 1.0f, 1.0f,
+    //1.0f,-1.0f,-1.0f,
+    //1.0f, 1.0f,-1.0f,
+    //1.0f,-1.0f,-1.0f,
+    //1.0f, 1.0f, 1.0f,
+    //1.0f,-1.0f, 1.0f,
+    //1.0f, 1.0f, 1.0f,
+    //1.0f, 1.0f,-1.0f,
+    //-1.0f, 1.0f,-1.0f,
+    //1.0f, 1.0f, 1.0f,
+    //-1.0f, 1.0f,-1.0f,
+    //-1.0f, 1.0f, 1.0f,
+    //1.0f, 1.0f, 1.0f,
+    //-1.0f, 1.0f, 1.0f,
+    //1.0f,-1.0f, 1.0f
+    //};
 
     // This will identify our vertex buffer
     GLuint vertexbuffer;
@@ -116,7 +120,7 @@ int main(int argc, char** argv)
     glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
 
     // One color for each vertex. They were generated randomly.
-    static const GLfloat g_color_buffer_data[] = {
+    /*static const GLfloat g_color_buffer_data[] = {
         0.583f,  0.771f,  0.014f,
         0.609f,  0.115f,  0.436f,
         0.327f,  0.483f,  0.844f,
@@ -153,11 +157,11 @@ int main(int argc, char** argv)
         0.673f,  0.211f,  0.457f,
         0.820f,  0.883f,  0.371f,
         0.982f,  0.099f,  0.879f
-    };
-    GLuint colorbuffer;
+    };*/
+    /*GLuint colorbuffer;
     glGenBuffers(1, &colorbuffer);
     glBindBuffer(GL_ARRAY_BUFFER, colorbuffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(g_color_buffer_data), g_color_buffer_data, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(g_color_buffer_data), g_color_buffer_data, GL_STATIC_DRAW);*/
     //const GLuint elems[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36 };
 
     //cube.push_back(upload_mesh(g_vertex_buffer_data, g_color_buffer_data, sizeof(g_vertex_buffer_data) / sizeof(g_vertex_buffer_data[0]), elems, sizeof(elems) / sizeof(elems[0])));
@@ -165,20 +169,10 @@ int main(int argc, char** argv)
     while (!glfwWindowShouldClose(window))
     {
         process_input(window);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glUseProgram(shader);
+        //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        //glUseProgram(shader);
         glEnableVertexAttribArray(0);
-        glEnableVertexAttribArray(1);
         glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-        glBindBuffer(GL_ARRAY_BUFFER, colorbuffer);
-        glVertexAttribPointer(
-            1,                                // attribute. No particular reason for 1, but must match the layout in the shader.
-            3,                                // size
-            GL_FLOAT,                         // type
-            GL_FALSE,                         // normalized?
-            0,                                // stride
-            (void*)0                          // array buffer offset
-        );
         glVertexAttribPointer(
             0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
             3,                  // size
@@ -188,8 +182,31 @@ int main(int argc, char** argv)
             (void*)0            // array buffer offset
         );
         // Draw the triangle !
-        glDrawArrays(GL_TRIANGLES, 0, 12*3); // Starting from vertex 0; 3 vertices total -> 1 triangle
+        glDrawArrays(GL_TRIANGLES, 0, 3); // Starting from vertex 0; 3 vertices total -> 1 triangle
         glDisableVertexAttribArray(0);
+        //glEnableVertexAttribArray(0);
+        //glEnableVertexAttribArray(1);
+        //glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+        //glBindBuffer(GL_ARRAY_BUFFER, colorbuffer);
+        //glVertexAttribPointer(
+        //    1,                                // attribute. No particular reason for 1, but must match the layout in the shader.
+        //    3,                                // size
+        //    GL_FLOAT,                         // type
+        //    GL_FALSE,                         // normalized?
+        //    0,                                // stride
+        //    (void*)0                          // array buffer offset
+        //);
+        //glVertexAttribPointer(
+        //    0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
+        //    3,                  // size
+        //    GL_FLOAT,           // type
+        //    GL_FALSE,           // normalized?
+        //    0,                  // stride
+        //    (void*)0            // array buffer offset
+        //);
+        //// Draw the triangle !
+        //glDrawArrays(GL_TRIANGLES, 0, 12*3); // Starting from vertex 0; 3 vertices total -> 1 triangle
+        //glDisableVertexAttribArray(0);
         //draw(cube);
         glfwSwapBuffers(window);
         glfwPollEvents();
