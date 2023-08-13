@@ -31,6 +31,7 @@ int main(int argc, char** argv)
         std::cout << "GLFW failed to initialize. Quitting\n";
         return -1;
     }
+    glfwWindowHint(GLFW_SAMPLES, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
@@ -59,69 +60,74 @@ int main(int argc, char** argv)
     glfwSetCursorPosCallback(window, glfw_mouse_movement_callback);
     glfwSetKeyCallback(window, glfw_key_callback);
 
-    //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+    glClearColor(0.3f, 0.3f, 0.65f, 0.f);
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+
+    // shaders
     std::string vert_shade = read_to_string("shaders\\vert_2d.glsl");
     std::string frag_shade = read_to_string("shaders\\frag_base.glsl");
-    unsigned int shader = load_shader(vert_shade.c_str(), frag_shade.c_str());
+    std::shared_ptr<GLSL_shader> shader = std::make_shared<GLSL_shader>(vert_shade.c_str(), frag_shade.c_str());
+    //unsigned int shader = load_shader(vert_shade.c_str(), frag_shade.c_str());
+    GLuint MatrixID = glGetUniformLocation(shader->get_handle(), "MVP");
 
-    glClearColor(0.3f, 0.3f, 0.65f, 0.f);
-    //std::vector<draw_details> cube;
-    GLuint vertex_array_id;
-    glGenVertexArrays(1, &vertex_array_id);
-    glBindVertexArray(vertex_array_id);
-    /*static const GLfloat g_vertex_buffer_data[] = {
-       -1.0f, -1.0f, 0.0f,
-       1.0f, -1.0f, 0.0f,
-       0.0f,  1.0f, 0.0f,
-    };*/
+
+    // Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
+    glm::mat4 Projection = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 100.0f);
+
+    // Camera matrix
+    glm::mat4 View = glm::lookAt(
+        glm::vec3(4, 3, -3), // Camera is at (4,3,-3), in World Space
+        glm::vec3(0, 0, 0), // and looks at the origin
+        glm::vec3(0, 1, 0)  // Head is up (set to 0,-1,0 to look upside-down)
+    );
+    // Model matrix : an identity matrix (model will be at the origin)
+    glm::mat4 Model = glm::mat4(1.0f);
+    // Our ModelViewProjection : multiplication of our 3 matrices
+    glm::mat4 MVP = Projection * View * Model; // Remember, matrix multiplication is the other way around
+
+    std::vector<draw_details> cube;
+    
     static const GLfloat g_vertex_buffer_data[] = {
-    -1.0f,-1.0f,-1.0f, // triangle 1 : begin
-    -1.0f,-1.0f, 1.0f,
-    -1.0f, 1.0f, 1.0f, // triangle 1 : end
-    1.0f, 1.0f,-1.0f, // triangle 2 : begin
-    -1.0f,-1.0f,-1.0f,
-    -1.0f, 1.0f,-1.0f, // triangle 2 : end
-    1.0f,-1.0f, 1.0f,
-    -1.0f,-1.0f,-1.0f,
-    1.0f,-1.0f,-1.0f,
-    1.0f, 1.0f,-1.0f,
-    1.0f,-1.0f,-1.0f,
-    -1.0f,-1.0f,-1.0f,
-    -1.0f,-1.0f,-1.0f,
-    -1.0f, 1.0f, 1.0f,
-    -1.0f, 1.0f,-1.0f,
-    1.0f,-1.0f, 1.0f,
-    -1.0f,-1.0f, 1.0f,
-    -1.0f,-1.0f,-1.0f,
-    -1.0f, 1.0f, 1.0f,
-    -1.0f,-1.0f, 1.0f,
-    1.0f,-1.0f, 1.0f,
-    1.0f, 1.0f, 1.0f,
-    1.0f,-1.0f,-1.0f,
-    1.0f, 1.0f,-1.0f,
-    1.0f,-1.0f,-1.0f,
-    1.0f, 1.0f, 1.0f,
-    1.0f,-1.0f, 1.0f,
-    1.0f, 1.0f, 1.0f,
-    1.0f, 1.0f,-1.0f,
-    -1.0f, 1.0f,-1.0f,
-    1.0f, 1.0f, 1.0f,
-    -1.0f, 1.0f,-1.0f,
-    -1.0f, 1.0f, 1.0f,
-    1.0f, 1.0f, 1.0f,
-    -1.0f, 1.0f, 1.0f,
-    1.0f,-1.0f, 1.0f
+        -1.0f,-1.0f,-1.0f,
+        -1.0f,-1.0f, 1.0f,
+        -1.0f, 1.0f, 1.0f,
+         1.0f, 1.0f,-1.0f,
+        -1.0f,-1.0f,-1.0f,
+        -1.0f, 1.0f,-1.0f,
+         1.0f,-1.0f, 1.0f,
+        -1.0f,-1.0f,-1.0f,
+         1.0f,-1.0f,-1.0f,
+         1.0f, 1.0f,-1.0f,
+         1.0f,-1.0f,-1.0f,
+        -1.0f,-1.0f,-1.0f,
+        -1.0f,-1.0f,-1.0f,
+        -1.0f, 1.0f, 1.0f,
+        -1.0f, 1.0f,-1.0f,
+         1.0f,-1.0f, 1.0f,
+        -1.0f,-1.0f, 1.0f,
+        -1.0f,-1.0f,-1.0f,
+        -1.0f, 1.0f, 1.0f,
+        -1.0f,-1.0f, 1.0f,
+         1.0f,-1.0f, 1.0f,
+         1.0f, 1.0f, 1.0f,
+         1.0f,-1.0f,-1.0f,
+         1.0f, 1.0f,-1.0f,
+         1.0f,-1.0f,-1.0f,
+         1.0f, 1.0f, 1.0f,
+         1.0f,-1.0f, 1.0f,
+         1.0f, 1.0f, 1.0f,
+         1.0f, 1.0f,-1.0f,
+        -1.0f, 1.0f,-1.0f,
+         1.0f, 1.0f, 1.0f,
+        -1.0f, 1.0f,-1.0f,
+        -1.0f, 1.0f, 1.0f,
+         1.0f, 1.0f, 1.0f,
+        -1.0f, 1.0f, 1.0f,
+         1.0f,-1.0f, 1.0f
     };
-
-    // This will identify our vertex buffer
-    GLuint vertexbuffer;
-    // Generate 1 buffer, put the resulting identifier in vertexbuffer
-    glGenBuffers(1, &vertexbuffer);
-    // The following commands will talk about our 'vertexbuffer' buffer
-    glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-    // Give our vertices to OpenGL.
-    glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
-
+   
     // One color for each vertex. They were generated randomly.
     static const GLfloat g_color_buffer_data[] = {
         0.583f,  0.771f,  0.014f,
@@ -161,60 +167,23 @@ int main(int argc, char** argv)
         0.820f,  0.883f,  0.371f,
         0.982f,  0.099f,  0.879f
     };
-    GLuint colorbuffer;
-    glGenBuffers(1, &colorbuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, colorbuffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(g_color_buffer_data), g_color_buffer_data, GL_STATIC_DRAW);
-    //const GLuint elems[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36 };
+    std::vector<GLfloat> vertex_buffer_data(g_vertex_buffer_data, g_vertex_buffer_data + sizeof(g_vertex_buffer_data) / sizeof(g_vertex_buffer_data[0]));
+    std::vector<GLfloat> color_buffer_data(g_color_buffer_data, g_color_buffer_data + sizeof(g_color_buffer_data) / sizeof(g_color_buffer_data[0]));
+    cube.push_back(upload_cube(vertex_buffer_data, color_buffer_data));
 
-    //cube.push_back(upload_mesh(g_vertex_buffer_data, g_color_buffer_data, sizeof(g_vertex_buffer_data) / sizeof(g_vertex_buffer_data[0]), elems, sizeof(elems) / sizeof(elems[0])));
- 
     while (!glfwWindowShouldClose(window))
     {
         process_input(window);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glUseProgram(shader);
-        //glEnableVertexAttribArray(0);
-        //glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-        //glVertexAttribPointer(
-        //    0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
-        //    3,                  // size
-        //    GL_FLOAT,           // type
-        //    GL_FALSE,           // normalized?
-        //    0,                  // stride
-        //    (void*)0            // array buffer offset
-        //);
-        //// Draw the triangle !
-        //glDrawArrays(GL_TRIANGLES, 0, 3); // Starting from vertex 0; 3 vertices total -> 1 triangle
-        //glDisableVertexAttribArray(0);
-        glEnableVertexAttribArray(0);
-        glEnableVertexAttribArray(1);
-        glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-        glBindBuffer(GL_ARRAY_BUFFER, colorbuffer);
-        glVertexAttribPointer(
-            1,                                // attribute. No particular reason for 1, but must match the layout in the shader.
-            3,                                // size
-            GL_FLOAT,                         // type
-            GL_FALSE,                         // normalized?
-            0,                                // stride
-            (void*)0                          // array buffer offset
-        );
-        glVertexAttribPointer(
-            0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
-            3,                  // size
-            GL_FLOAT,           // type
-            GL_FALSE,           // normalized?
-            0,                  // stride
-            (void*)0            // array buffer offset
-        );
-        // Draw the triangle !
-        glDrawArrays(GL_TRIANGLES, 0, 12*3); // Starting from vertex 0; 3 vertices total -> 1 triangle
-        glDisableVertexAttribArray(0);
-        //draw(cube);
+        shader->use();
+        
+        glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
+
+        
+        draw(cube);
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
-
     // remove data from GPU
     glfwDestroyWindow(window);
 
