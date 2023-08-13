@@ -2,7 +2,6 @@
 #include <GLFW/glfw3.h>
 
 #include "Camera.h"
-
 #include "Callbacks.h"
 #include "Utilities.h"
 #include "Renderer.h"
@@ -34,7 +33,6 @@ int main(int argc, char** argv)
     glfwSetCursorPosCallback(renderer.get_window().get(), glfw_mouse_movement_callback);
     glfwSetKeyCallback(renderer.get_window().get(), glfw_key_callback);
 
-    // shaders
     std::shared_ptr<GLSL_shader> shader;
     std::string vert_shader = read_to_string("shaders\\vert_2d.glsl");
     std::string frag_shader = read_to_string("shaders\\frag_base.glsl");
@@ -44,26 +42,6 @@ int main(int argc, char** argv)
     catch (const std::exception& ex) {
         write_log(ex.what());
     }
-    //GLuint MatrixID = glGetUniformLocation(shader->get_handle(), "MVP");
-
-
-    //// Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
-    //constexpr float ASPECT_RATIO = static_cast<float>(WINDOW_WIDTH) / static_cast<float>(WINDOW_HEIGHT);
-    //constexpr float FOV = glm::radians(45.0f);
-    //constexpr float NEAR = 0.1f;
-    //constexpr float FAR = 100.0f;
-    //glm::mat4 Projection = glm::perspective(FOV, ASPECT_RATIO, NEAR, FAR);
-
-    //// Camera matrix
-    //glm::mat4 View = glm::lookAt(
-    //    glm::vec3(4, 3, -3), // Camera is at (4,3,-3), in World Space
-    //    glm::vec3(0, 0, 0), // and looks at the origin
-    //    glm::vec3(0, 1, 0)  // Head is up (set to 0,-1,0 to look upside-down)
-    //);
-    //// Model matrix : an identity matrix (model will be at the origin)
-    //glm::mat4 Model = glm::mat4(1.0f);
-    //// Our ModelViewProjection : multiplication of our 3 matrices
-    //glm::mat4 MVP = Projection * View * Model; // Remember, matrix multiplication is the other way around
 
     camera camera(shader->get_handle(), WINDOW_WIDTH, WINDOW_HEIGHT);
     std::vector<draw_details> cube;
@@ -107,7 +85,6 @@ int main(int argc, char** argv)
          1.0f,-1.0f, 1.0f
     };
    
-    // One color for each vertex. They were generated randomly.
     static const GLfloat color_buffer_data[] = {
         0.583f,  0.771f,  0.014f,
         0.609f,  0.115f,  0.436f,
@@ -155,16 +132,14 @@ int main(int argc, char** argv)
     {
         process_input(window);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        shader->use();
         
+        shader->use();
         camera.uniform_matrix();
-        //glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
 
         draw(cube);
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
-    // remove data from GPU
     unload_mesh(cube);
 
     return 0;
