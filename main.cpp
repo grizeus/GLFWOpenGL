@@ -66,15 +66,24 @@ int main(int argc, char** argv)
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 
     // shaders
-    std::string vert_shade = read_to_string("shaders\\vert_2d.glsl");
-    std::string frag_shade = read_to_string("shaders\\frag_base.glsl");
-    std::shared_ptr<GLSL_shader> shader = std::make_shared<GLSL_shader>(vert_shade.c_str(), frag_shade.c_str());
-    //unsigned int shader = load_shader(vert_shade.c_str(), frag_shade.c_str());
+    std::shared_ptr<GLSL_shader> shader;
+    std::string vert_shader = read_to_string("shaders\\vert_2d.glsl");
+    std::string frag_shader = read_to_string("shaders\\frag_base.glsl");
+    try {
+        shader = std::make_shared<GLSL_shader>(vert_shader.c_str(), frag_shader.c_str());
+    }
+    catch (const std::exception& ex) {
+        write_log(ex.what());
+    }
     GLuint MatrixID = glGetUniformLocation(shader->get_handle(), "MVP");
 
 
     // Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
-    glm::mat4 Projection = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 100.0f);
+    constexpr float ASPECT_RATIO = static_cast<float>(WINDOW_WIDTH) / static_cast<float>(WINDOW_HEIGHT);
+    constexpr float FOV = glm::radians(45.0f);
+    constexpr float NEAR = 0.1f;
+    constexpr float FAR = 100.0f;
+    glm::mat4 Projection = glm::perspective(FOV, ASPECT_RATIO, NEAR, FAR);
 
     // Camera matrix
     glm::mat4 View = glm::lookAt(
@@ -89,7 +98,7 @@ int main(int argc, char** argv)
 
     std::vector<draw_details> cube;
     
-    static const GLfloat g_vertex_buffer_data[] = {
+    static const GLfloat vertex_buffer_data[] = {
         -1.0f,-1.0f,-1.0f,
         -1.0f,-1.0f, 1.0f,
         -1.0f, 1.0f, 1.0f,
@@ -129,7 +138,7 @@ int main(int argc, char** argv)
     };
    
     // One color for each vertex. They were generated randomly.
-    static const GLfloat g_color_buffer_data[] = {
+    static const GLfloat color_buffer_data[] = {
         0.583f,  0.771f,  0.014f,
         0.609f,  0.115f,  0.436f,
         0.327f,  0.483f,  0.844f,
@@ -167,9 +176,9 @@ int main(int argc, char** argv)
         0.820f,  0.883f,  0.371f,
         0.982f,  0.099f,  0.879f
     };
-    std::vector<GLfloat> vertex_buffer_data(g_vertex_buffer_data, g_vertex_buffer_data + sizeof(g_vertex_buffer_data) / sizeof(g_vertex_buffer_data[0]));
-    std::vector<GLfloat> color_buffer_data(g_color_buffer_data, g_color_buffer_data + sizeof(g_color_buffer_data) / sizeof(g_color_buffer_data[0]));
-    cube.push_back(upload_cube(vertex_buffer_data, color_buffer_data));
+    std::vector<GLfloat> vertex_data(std::begin(vertex_buffer_data), std::end(vertex_buffer_data));
+    std::vector<GLfloat> color_data(std::begin(color_buffer_data), std::end(color_buffer_data));
+    cube.push_back(upload_mesh(vertex_data, color_data));
 
     while (!glfwWindowShouldClose(window))
     {
@@ -179,12 +188,12 @@ int main(int argc, char** argv)
         
         glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
 
-        
         draw(cube);
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
     // remove data from GPU
+    unload_mesh(cube);
     glfwDestroyWindow(window);
 
     glfwTerminate();

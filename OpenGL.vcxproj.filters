@@ -69,16 +69,7 @@
     <None Include="shaders\frag_base.glsl">
       <Filter>GLSL</Filter>
     </None>
-    <None Include="shaders\vert_3d.glsl">
-      <Filter>GLSL</Filter>
-    </None>
     <None Include="shaders\vert_2d.glsl">
-      <Filter>GLSL</Filter>
-    </None>
-    <None Include="shaders\frag_cursor.glsl">
-      <Filter>GLSL</Filter>
-    </None>
-    <None Include="shaders\frag_demo.glsl">
       <Filter>GLSL</Filter>
     </None>
   </ItemGroup>
