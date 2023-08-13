@@ -6,6 +6,7 @@
 
 #include "Callbacks.h"
 #include "Utilities.h"
+#include "Renderer.h"
 #include "Input.h"
 #include "Vertex.h"
 #include "DrawDetails.h"
@@ -20,50 +21,19 @@
 
 int main(int argc, char** argv)
 {
+    glfwSetErrorCallback(glfw_error_callback);
     const int WINDOW_WIDTH = 800;
     const int WINDOW_HEIGHT = 600;
 
-    // init OpenGL
-    glfwSetErrorCallback(glfw_error_callback);
-    glfwInit();
-    if (!glfwInit())
-    {   
-        std::cout << "GLFW failed to initialize. Quitting\n";
-        return -1;
-    }
-    glfwWindowHint(GLFW_SAMPLES, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    renderer renderer;
+    renderer.create_window(extract_version(argv[0]), WINDOW_WIDTH, WINDOW_HEIGHT);
 
-    // create window
-    GLFWwindow* window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, extract_version(argv[0]), nullptr, nullptr);
-    if (!window)
-    {
-        std::cout << "Failed to create GLFW window" << std::endl;
-        glfwTerminate();
-        return -1;
-    }
-    else
-        glfwMakeContextCurrent(window);
-
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-    {
-        std::cout << "Failed to initialize GLAD" << std::endl;
-        return -1;
-    }
     print_GL_info();
 
-    glfwSetWindowCloseCallback(window, glfw_window_close_callback);
-    glfwSetFramebufferSizeCallback(window, glfw_framebuffer_size_callback);
-    glfwSetCursorPosCallback(window, glfw_mouse_movement_callback);
-    glfwSetKeyCallback(window, glfw_key_callback);
-
-    glClearColor(0.3f, 0.3f, 0.65f, 0.f);
-    glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LESS);
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+    glfwSetWindowCloseCallback(renderer.get_window().get(), glfw_window_close_callback);
+    glfwSetFramebufferSizeCallback(renderer.get_window().get(), glfw_framebuffer_size_callback);
+    glfwSetCursorPosCallback(renderer.get_window().get(), glfw_mouse_movement_callback);
+    glfwSetKeyCallback(renderer.get_window().get(), glfw_key_callback);
 
     // shaders
     std::shared_ptr<GLSL_shader> shader;
@@ -180,11 +150,12 @@ int main(int argc, char** argv)
     std::vector<GLfloat> color_data(std::begin(color_buffer_data), std::end(color_buffer_data));
     cube.push_back(upload_mesh(vertex_data, color_data));
 
+    GLFWwindow* window = renderer.get_window().get();
     while (!glfwWindowShouldClose(window))
     {
         process_input(window);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        shader->use();
+        //shader->use();
         
         glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
 
@@ -194,8 +165,6 @@ int main(int argc, char** argv)
     }
     // remove data from GPU
     unload_mesh(cube);
-    glfwDestroyWindow(window);
 
-    glfwTerminate();
     return 0;
 }

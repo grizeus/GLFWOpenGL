@@ -2,13 +2,11 @@
 #include <GLFW/glfw3.h>
 #include <cstdio>
 #include "Utilities.h"
-#include "shaders/Shader.h"
 #include <iostream>
 
 void glfw_error_callback(int error, const char* description)
 {
     write_log(description);
-    throw("glfw error");
 }
 
 void glfw_window_close_callback(GLFWwindow* window)

@@ -128,6 +128,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="shaders\Shader.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -135,6 +136,7 @@
     <ClInclude Include="DrawDetails.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="Query.h" />
+    <ClInclude Include="Renderer.h" />
     <ClInclude Include="rendering\OpenGLDraw.h" />
     <ClInclude Include="rendering\OpenGLLoader.h" />
     <ClInclude Include="rendering\ShaderLoader.h" />

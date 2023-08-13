@@ -1,0 +1,60 @@
+#include "Renderer.h"
+#include "Utilities.h"
+
+#include <stdexcept>
+
+renderer::renderer()
+    :m_window(nullptr)
+{
+    // init OpenGL
+    glfwInit();
+    if (!glfwInit())
+    {
+        write_log("GLFW failed to initialize.\n");
+        throw std::runtime_error("GLFW failed to initialize");
+    }
+    glfwWindowHint(GLFW_SAMPLES, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+}
+
+renderer::~renderer()
+{
+    write_log("Program ended.\n");
+    glfwTerminate();
+}
+
+void renderer::create_window(const std::string& title, int width, int height)
+{
+    // create window
+    m_window = std::shared_ptr<GLFWwindow>(glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr), glfwDestroyWindow);
+    if (!m_window)
+    {
+        write_log("Failed to create GLFW window.\n");
+        glfwTerminate();
+        throw std::runtime_error("Failed to create GLFW window");
+    }
+    else
+        glfwMakeContextCurrent(m_window.get());
+
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+    {
+        write_log("Failed to initialize GLAD.\n");
+        throw std::runtime_error("Failed to initialize GLAD");
+    }
+    
+    glViewport(0, 0, width, height);
+    
+    glClearColor(0.3f, 0.3f, 0.65f, 0.f);
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
+
+    glfwSetInputMode(m_window.get(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+}
+
+window_ptr renderer::get_window()
+{
+	return m_window;
+}
