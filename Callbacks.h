@@ -23,7 +23,7 @@ void glfw_framebuffer_size_callback(GLFWwindow* window, int width, int height)
 
 void glfw_mouse_movement_callback(GLFWwindow* window, double x, double y)
 {
-    std::cout << "x: " << x << " y: " << y << '\n';
+    //std::cout << "x: " << x << " y: " << y << '\n';
 }
 
 void glfw_key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)

@@ -51,7 +51,7 @@ void renderer::create_window(const std::string& title, int width, int height)
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
 
-    glfwSetInputMode(m_window.get(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+    //glfwSetInputMode(m_window.get(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 }
 
 window_ptr renderer::get_window()

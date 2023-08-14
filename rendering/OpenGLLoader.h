@@ -3,77 +3,94 @@
 #include <vector>
 #include "../Vertex.h"
 
-draw_details upload_mesh(std::vector<GLfloat> verts, std::vector<GLfloat> colors)
+draw_details upload_mesh_array(const std::vector<GLfloat>& verts)
 {
-	GLuint vao_handle;
-	glGenVertexArrays(1, &vao_handle);
-	glBindVertexArray(vao_handle);
+	if (verts.empty())
+		throw ("Draw details is empty");
+	GLuint vao, vbo;
+	glGenVertexArrays(1, &vao);
+	glBindVertexArray(vao);
 
-	GLuint vertexbuffer;
-	glGenBuffers(1, &vertexbuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-	glBufferData(GL_ARRAY_BUFFER, verts.size() * sizeof(GLfloat), &verts[0], GL_STATIC_DRAW);
-	
+	glGenBuffers(1, &vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 
-	GLuint colorbuffer;
-	glGenBuffers(1, &colorbuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, colorbuffer);
-	glBufferData(GL_ARRAY_BUFFER, colors.size() * sizeof(GLfloat), &colors[0], GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, verts.size() * sizeof(GLfloat), verts.data(), GL_STATIC_DRAW);
+
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	return draw_details(vao, static_cast<GLuint>(verts.size()));
+}
+
+draw_details upload_mesh_elements(const std::vector<GLfloat>& verts, const std::vector<GLuint>& indices)
+{
+	GLuint vao, vbo, ebo;
+	glGenVertexArrays(1, &vao);
+	glBindVertexArray(vao);
+
+	// Create and bind VBO
+	glGenBuffers(1, &vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glBufferData(GL_ARRAY_BUFFER, verts.size() * sizeof(GLfloat), verts.data(), GL_STATIC_DRAW);
+
+	// Create and bind EBO
+	glGenBuffers(1, &ebo);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), indices.data(), GL_STATIC_DRAW);
+
+	// Set up vertex attribute pointer
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), 0);
+
+	// Unbind VAO and VBO
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	return draw_details(vao, static_cast<GLuint>(indices.size()));
+}
+
+draw_details upload_mesh_elems_cols(const std::vector<GLfloat>& verts, const std::vector<GLfloat>& colors, const std::vector<GLuint>& indices)
+{
+	if (verts.empty() || colors.empty() || indices.empty())
+		throw ("Draw details is empty");
+	GLuint vao, vbo[2], ebo;
+	glGenVertexArrays(1, &vao);
+	glBindVertexArray(vao);
+
+	// Create and bind VBO
+	glGenBuffers(2, vbo);
+	GLuint pos_vbo = vbo[0];
+	GLuint col_vbo = vbo[1];
+
+	glBindBuffer(GL_ARRAY_BUFFER, pos_vbo);
+	glBufferData(GL_ARRAY_BUFFER, verts.size() * sizeof(GLfloat), verts.data(), GL_STATIC_DRAW);
+
+	glBindBuffer(GL_ARRAY_BUFFER, col_vbo);
+	glBufferData(GL_ARRAY_BUFFER, verts.size() * sizeof(GLfloat), colors.data(), GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(0); // pos
-	
-	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-	glVertexAttribPointer(
-		0,                                // attribute. No particular reason for 1, but must match the layout in the shader.
-		3,                                // size
-		GL_FLOAT,                         // type
-		GL_FALSE,                         // normalized?
-		0,                                // stride
-		(void*)0                          // array buffer offset
-	);
 	glEnableVertexAttribArray(1); // col
-	glBindBuffer(GL_ARRAY_BUFFER, colorbuffer);
-	glVertexAttribPointer(
-		1,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
-		3,                  // size
-		GL_FLOAT,           // type
-		GL_FALSE,           // normalized?
-		0,                  // stride
-		(void*)0            // array buffer offset
-	);
 
+	glBindVertexBuffer(0, pos_vbo, 0, sizeof(GLfloat) * 3);
+	glBindVertexBuffer(1, col_vbo, 0, sizeof(GLfloat) * 3);
+
+	glVertexAttribFormat(0, 3, GL_FLOAT, GL_FALSE, 0);
+	glVertexAttribBinding(0, 0);
+
+	glVertexAttribFormat(1, 3, GL_FLOAT, GL_FALSE, 0);
+	glVertexAttribBinding(1, 1);
+
+	// Create and bind EBO
+	glGenBuffers(1, &ebo);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), indices.data(), GL_STATIC_DRAW);
+
+	// Unbind VAO and VBO
 	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-	return draw_details(vao_handle, static_cast<GLuint>(verts.size()));
+	return draw_details(vao, static_cast<GLuint>(indices.size()));
 }
-
-draw_strip_details upload_mesh(const GLfloat* verts, const GLuint v_count)
-{
-	GLuint vao_handle;
-	glGenVertexArrays(1, &vao_handle);
-	glBindVertexArray(vao_handle);
-
-
-	GLuint vbo_handle;
-	glGenBuffers(1, &vbo_handle);
-	GLuint position_buffer_handle = vbo_handle;
-	glBindBuffer(GL_ARRAY_BUFFER, position_buffer_handle);
-	glBufferData(GL_ARRAY_BUFFER, v_count * sizeof(GLfloat), verts, GL_STATIC_DRAW);
-	
-	glEnableVertexAttribArray(0);
-	glBindVertexBuffer(0, position_buffer_handle, 0, sizeof(GLfloat) * 2);
-	glVertexAttribFormat(0, 2, GL_FLOAT, GL_FALSE, 0);
-	glVertexAttribBinding(0, 0);  // map to shader
-
-	glBindVertexArray(0);
-	glDeleteBuffers(1, &vbo_handle);
-
-	std::cout << "draw strip:\n" << " -vao: " << vao_handle << "\n -count: " << v_count << '\n';
-
-	return draw_strip_details(vao_handle, v_count);
-}
-
-
 
 template <typename T>
 void unload_mesh(std::vector<T>& details)

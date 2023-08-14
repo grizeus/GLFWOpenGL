@@ -137,6 +137,7 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="DrawDetails.h" />
     <ClInclude Include="Input.h" />
+    <ClInclude Include="ObjectLoader.h" />
     <ClInclude Include="Query.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="rendering\OpenGLDraw.h" />
@@ -145,7 +146,6 @@
     <ClInclude Include="shaders\Shader.h" />
     <ClInclude Include="Utilities.h" />
     <ClInclude Include="Version.h" />
-    <ClInclude Include="Vertex.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="media\container.jpg" />

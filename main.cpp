@@ -10,12 +10,14 @@
 #include "DrawDetails.h"
 #include "Version.h"
 #include "Query.h"
+#include "ObjectLoader.h"
 #include "shaders/Shader.h"
 #include "rendering/OpenGLDraw.h"
 #include "rendering/OpenGLLoader.h"
 #include "rendering/ShaderLoader.h"
 #include <iostream>
 #include <vector>
+
 
 int main(int argc, char** argv)
 {
@@ -27,63 +29,31 @@ int main(int argc, char** argv)
     renderer.create_window(extract_version(argv[0]), WINDOW_WIDTH, WINDOW_HEIGHT);
 
     print_GL_info();
+    GLFWwindow* window = renderer.get_window().get();
 
-    glfwSetWindowCloseCallback(renderer.get_window().get(), glfw_window_close_callback);
-    glfwSetFramebufferSizeCallback(renderer.get_window().get(), glfw_framebuffer_size_callback);
-    glfwSetCursorPosCallback(renderer.get_window().get(), glfw_mouse_movement_callback);
-    glfwSetKeyCallback(renderer.get_window().get(), glfw_key_callback);
+    glfwSetWindowCloseCallback(window, glfw_window_close_callback);
+    glfwSetFramebufferSizeCallback(window, glfw_framebuffer_size_callback);
+    glfwSetCursorPosCallback(window, glfw_mouse_movement_callback);
+    glfwSetKeyCallback(window, glfw_key_callback);
 
     std::shared_ptr<GLSL_shader> shader;
     std::string vert_shader = read_to_string("shaders\\vert_2d.glsl");
     std::string frag_shader = read_to_string("shaders\\frag_base.glsl");
-    try {
+    try
+    {
         shader = std::make_shared<GLSL_shader>(vert_shader.c_str(), frag_shader.c_str());
     }
-    catch (const std::exception& ex) {
+    catch (const std::exception& ex)
+    {
         write_log(ex.what());
     }
-
+    query_input_attribs(shader->get_handle());
+    query_uniforms(shader->get_handle());
     camera camera(shader->get_handle(), WINDOW_WIDTH, WINDOW_HEIGHT);
-    std::vector<draw_details> cube;
-    
-    static const GLfloat vertex_buffer_data[] = {
-        -1.0f,-1.0f,-1.0f,
-        -1.0f,-1.0f, 1.0f,
-        -1.0f, 1.0f, 1.0f,
-         1.0f, 1.0f,-1.0f,
-        -1.0f,-1.0f,-1.0f,
-        -1.0f, 1.0f,-1.0f,
-         1.0f,-1.0f, 1.0f,
-        -1.0f,-1.0f,-1.0f,
-         1.0f,-1.0f,-1.0f,
-         1.0f, 1.0f,-1.0f,
-         1.0f,-1.0f,-1.0f,
-        -1.0f,-1.0f,-1.0f,
-        -1.0f,-1.0f,-1.0f,
-        -1.0f, 1.0f, 1.0f,
-        -1.0f, 1.0f,-1.0f,
-         1.0f,-1.0f, 1.0f,
-        -1.0f,-1.0f, 1.0f,
-        -1.0f,-1.0f,-1.0f,
-        -1.0f, 1.0f, 1.0f,
-        -1.0f,-1.0f, 1.0f,
-         1.0f,-1.0f, 1.0f,
-         1.0f, 1.0f, 1.0f,
-         1.0f,-1.0f,-1.0f,
-         1.0f, 1.0f,-1.0f,
-         1.0f,-1.0f,-1.0f,
-         1.0f, 1.0f, 1.0f,
-         1.0f,-1.0f, 1.0f,
-         1.0f, 1.0f, 1.0f,
-         1.0f, 1.0f,-1.0f,
-        -1.0f, 1.0f,-1.0f,
-         1.0f, 1.0f, 1.0f,
-        -1.0f, 1.0f,-1.0f,
-        -1.0f, 1.0f, 1.0f,
-         1.0f, 1.0f, 1.0f,
-        -1.0f, 1.0f, 1.0f,
-         1.0f,-1.0f, 1.0f
-    };
+
+    std::vector<GLfloat> verts_data;
+    std::vector<GLuint> indices;
+    load_vert_and_ind("media\\cube.obj", verts_data, indices);
    
     static const GLfloat color_buffer_data[] = {
         0.583f,  0.771f,  0.014f,
@@ -123,11 +93,13 @@ int main(int argc, char** argv)
         0.820f,  0.883f,  0.371f,
         0.982f,  0.099f,  0.879f
     };
-    std::vector<GLfloat> vertex_data(std::begin(vertex_buffer_data), std::end(vertex_buffer_data));
+    
     std::vector<GLfloat> color_data(std::begin(color_buffer_data), std::end(color_buffer_data));
-    cube.push_back(upload_mesh(vertex_data, color_data));
 
-    GLFWwindow* window = renderer.get_window().get();
+    std::vector<draw_details> cube;
+    //cube.push_back(upload_mesh_elements(verts_data, indices));
+    cube.push_back(upload_mesh_elems_cols(verts_data, color_data, indices));
+
     while (!glfwWindowShouldClose(window))
     {
         process_input(window);
@@ -136,7 +108,7 @@ int main(int argc, char** argv)
         shader->use();
         camera.uniform_matrix();
 
-        draw(cube);
+        draw_elems(cube);
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
