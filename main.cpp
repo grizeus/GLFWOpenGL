@@ -1,4 +1,9 @@
+#ifdef _WIN32
 #include <glad/glad.h>
+#elif __linux__
+#include <GLES3/gl3.h>
+#include <EGL/egl.h>
+#endif
 #include <GLFW/glfw3.h>
 
 #include "Camera.h"
@@ -6,7 +11,6 @@
 #include "Utilities.h"
 #include "Renderer.h"
 #include "Input.h"
-#include "Vertex.h"
 #include "DrawDetails.h"
 #include "Version.h"
 #include "Query.h"
@@ -14,7 +18,7 @@
 #include "shaders/Shader.h"
 #include "rendering/OpenGLDraw.h"
 #include "rendering/OpenGLLoader.h"
-#include "rendering/ShaderLoader.h"
+#include "shaders/ShaderLoader.h"
 #include <iostream>
 #include <vector>
 

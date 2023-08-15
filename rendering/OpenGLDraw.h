@@ -1,9 +1,14 @@
 #pragma once
+#ifdef _WIN32
 #include <glad/glad.h>
+#elif __linux__
+#include <GLES3/gl3.h>
+#include <GL/gl.h>
+#endif
 #include <vector>
-#include "../Vertex.h"
+#include "../DrawDetails.h"
 
-void draw(const std::vector<draw_details>& details)
+inline void draw(const std::vector<draw_details>& details)
 {
 	for (const auto& d : details) 
 	{
@@ -12,7 +17,7 @@ void draw(const std::vector<draw_details>& details)
 	}
 }
 
-void strip_draw(const std::vector<draw_strip_details>& details)
+inline void strip_draw(const std::vector<draw_strip_details>& details)
 {
 	for (const auto& d : details)
 	{
@@ -22,7 +27,7 @@ void strip_draw(const std::vector<draw_strip_details>& details)
 	glBindVertexArray(0);
 }
 
-void draw_elems(const std::vector<draw_details>& details)
+inline void draw_elems(const std::vector<draw_details>& details)
 {
 	for (const auto& d : details) 
 	{

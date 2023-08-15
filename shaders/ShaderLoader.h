@@ -1,5 +1,11 @@
 #pragma once
+#include <cstdio>
+#ifdef _WIN32
 #include <glad/glad.h>
+#elif __linux__
+#include <GLES3/gl3.h>
+#include <GL/gl.h>
+#endif
 #include <vector>
 
 inline GLuint load_shader(const char* vertex_shader, const char* fragment_shader) {

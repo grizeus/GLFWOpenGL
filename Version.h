@@ -1,8 +1,12 @@
 #pragma once
+#ifdef _WIN32
 #include <glad/glad.h>
+#elif __linux__
+#include <GL/gl.h>
+#endif
 #include <stdio.h>
 
-void print_GL_info()
+inline void print_GL_info()
 {
 	const GLubyte* vendor = glGetString(GL_VENDOR);
 	printf("GL Vendor : %s\n", vendor);

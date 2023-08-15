@@ -1,7 +1,12 @@
 #pragma once
+#ifdef _WIN32
 #include <glad/glad.h>
+#elif __linux__
+#include <GLES3/gl3.h>
+#include <GL/gl.h>
+#endif
 #include <vector>
-#include "../Vertex.h"
+#include "../DrawDetails.h"
 
 draw_details upload_mesh_array(const std::vector<GLfloat>& verts)
 {

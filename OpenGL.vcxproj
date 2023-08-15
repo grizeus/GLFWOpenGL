@@ -148,9 +148,6 @@
     <ClInclude Include="Version.h" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="media\container.jpg" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="shaders\vert_2d.glsl" />
     <None Include="shaders\frag_base.glsl" />
   </ItemGroup>

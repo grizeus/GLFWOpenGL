@@ -1,6 +1,5 @@
 #include "Camera.h"
 
-
 camera::camera(GLuint shader, const int width, const int height)
 {
     m_matrix_id = glGetUniformLocation(shader, "MVP");
