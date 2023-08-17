@@ -8,7 +8,7 @@ class camera
 public:
 	camera(GLuint shader, const int width, const int height);
 	~camera();
-	void uniform_matrix();
+	void on_render();
 private:
 	GLuint m_matrix_id;
 	glm::mat4 m_mvp;

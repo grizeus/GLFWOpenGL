@@ -1,10 +1,10 @@
 #include "Camera.h"
 
-camera::camera(GLuint shader, const int width, const int height)
+camera::camera(GLuint shader, const int width, const int height, const glm::vec3& position, const glm::vec3& look_at)
 {
     m_matrix_id = glGetUniformLocation(shader, "MVP");
 
-    // Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 1000 units
+    // Projection matrix : 45ï¿½ Field of View, 4:3 ratio, display range : 0.1 unit <-> 1000 units
     float ASPECT_RATIO = static_cast<float>(width) / static_cast<float>(height);
     constexpr float FOV = glm::radians(45.0f);
     constexpr float NEAR = 0.1f;
@@ -13,8 +13,10 @@ camera::camera(GLuint shader, const int width, const int height)
 
     // Camera matrix
     glm::mat4 View = glm::lookAt(
-        glm::vec3(4, 3, -3), // Camera is at (4,3,-3), in World Space
-        glm::vec3(0, 0, 0), // and looks at the origin
+        // glm::vec3(4, 3, -3), // Camera is at (4,3,-3), in World Space
+        position,
+        // glm::vec3(0, 0, 0), // and looks at the origin
+        look_at
         glm::vec3(0, 1, 0)  // Head is up (set to 0,-1,0 to look upside-down)
     );
     // Model matrix : an identity matrix (model will be at the origin)
@@ -26,7 +28,7 @@ camera::camera(GLuint shader, const int width, const int height)
 camera::~camera()
 { }
 
-void camera::uniform_matrix()
+void camera::on_render()
 {
     glUniformMatrix4fv(m_matrix_id, 1, GL_FALSE, &m_mvp[0][0]);
 }

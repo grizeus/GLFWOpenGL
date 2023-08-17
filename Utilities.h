@@ -29,16 +29,6 @@ inline void write_log(const char* msg)
 { }
 #endif
 
-inline void read_to_string(const char* path, std::string& out)
-{
-    std::ifstream input_file_stream(path);
-    if(!input_file_stream.is_open())
-        throw ("Invalid file path!");
-    std::stringstream data;
-    data << input_file_stream.rdbuf();
-    out = data.str();
-}
-
 inline std::string read_to_string(const char* path)
 {
     std::ifstream input_file_stream(path);

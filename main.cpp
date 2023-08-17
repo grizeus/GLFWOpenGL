@@ -35,20 +35,19 @@ int main(int argc, char** argv)
     glfwSetCursorPosCallback(window, glfw_mouse_movement_callback);
     glfwSetKeyCallback(window, glfw_key_callback);
 
-    std::shared_ptr<GLSL_shader> shader;
     std::string vert_shader = read_to_string("shaders\\vert_2d.glsl");
     std::string frag_shader = read_to_string("shaders\\frag_base.glsl");
-    try
-    {
-        shader = std::make_shared<GLSL_shader>(vert_shader.c_str(), frag_shader.c_str());
-    }
-    catch (const std::exception& ex)
-    {
-        write_log(ex.what());
-    }
+    std::shared_ptr<GLSL_shader> shader = std::make_shared<GLSL_shader>(vert_shader.c_str(), frag_shader.c_str());
+
     query_input_attribs(shader->get_handle());
     query_uniforms(shader->get_handle());
     camera camera(shader->get_handle(), WINDOW_WIDTH, WINDOW_HEIGHT);
+
+    /*TODO
+    {
+        Object cube("media\\cube.obj");
+    }
+    */
 
     std::vector<GLfloat> verts_data;
     std::vector<GLuint> indices;
@@ -106,7 +105,11 @@ int main(int argc, char** argv)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
         shader->use();
-        camera.uniform_matrix();
+        camera.on_render();
+
+        /* TODO
+            cube.draw();
+        */
 
         draw_elems(cube);
         // draw(cube);
