@@ -4,6 +4,20 @@
 #include <iostream>
 #include "Utilities.h"
 
+struct vec3
+{
+	vec3(GLfloat x, GLfloat y, GLfloat z)
+		:m_x(x), m_y(y), m_z(z)
+	{}
+	~vec3()
+	{}
+	inline GLfloat return_x() { return m_x; }
+	inline GLfloat return_y() { return m_y; }
+	inline GLfloat return_z() { return m_z; }
+//private:
+	GLfloat m_x, m_y, m_z;
+};
+
 inline void load_obj(const char* path, std::vector<GLfloat>& vertices)
 {
 	std::vector<GLfloat> raw_v;
@@ -83,9 +97,9 @@ inline void load_obj(const char* path, std::vector<GLfloat>& vertices)
 	}
 }
 
-inline void load_vert_and_ind(const char* path, std::vector<GLfloat>& raw_v, std::vector<GLuint>& indices)
+inline void load_vert_and_ind(const char* path, std::vector<GLfloat>& verts, std::vector<GLuint>& indices)
 {
-
+	std::vector<vec3> positions;
 	std::vector<std::string> parts;
 	std::stringstream ss(read_to_string(path));
 	std::string line;
@@ -97,9 +111,7 @@ inline void load_vert_and_ind(const char* path, std::vector<GLfloat>& raw_v, std
 			char c;
 			GLfloat x, y, z;
 			iss >> c >> x >> y >> z;
-			raw_v.push_back(x);
-			raw_v.push_back(y);
-			raw_v.push_back(z);
+			positions.push_back(vec3(x, y, z));
 		}
 		else if (line.substr(0, 2) == "f ")
 		{
@@ -122,5 +134,14 @@ inline void load_vert_and_ind(const char* path, std::vector<GLfloat>& raw_v, std
 		indices.push_back(std::stoi(i1));
 		indices.push_back(std::stoi(i2));
 		indices.push_back(std::stoi(i3));
+	}
+	for (auto& i : indices)
+	{
+		if (i % 3 == 2)
+		{
+			verts.push_back(positions[indices[i] - 1].m_x);
+			verts.push_back(positions[indices[i] - 1].m_y);
+			verts.push_back(positions[indices[i] - 1].m_z);
+		}
 	}
 }
