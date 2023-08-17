@@ -14,7 +14,6 @@ public:
     void use();
     inline GLuint get_handle() { return m_handle; }
     void delete_shader();
-    void create_shader(const char* vert, const char* frag);
 
 private:
     GLuint m_handle;

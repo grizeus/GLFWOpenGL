@@ -10,7 +10,6 @@ renderer::renderer()
     glfwInit();
     if (!glfwInit())
     {
-        write_log("GLFW failed to initialize.\n");
         throw std::runtime_error("GLFW failed to initialize");
     }
     glfwWindowHint(GLFW_SAMPLES, 4);
@@ -32,7 +31,6 @@ void renderer::create_window(const std::string& title, int width, int height)
     m_window = std::shared_ptr<GLFWwindow>(glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr), glfwDestroyWindow);
     if (!m_window)
     {
-        write_log("Failed to create GLFW window.\n");
         glfwTerminate();
         throw std::runtime_error("Failed to create GLFW window");
     }
@@ -41,7 +39,6 @@ void renderer::create_window(const std::string& title, int width, int height)
 
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
-        write_log("Failed to initialize GLAD.\n");
         throw std::runtime_error("Failed to initialize GLAD");
     }
     

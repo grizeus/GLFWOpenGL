@@ -95,6 +95,7 @@ inline draw_details upload_mesh_elems_cols(const std::vector<GLfloat>& verts, co
 	return draw_details(vao, static_cast<GLuint>(indices.size()));
 }
 
+/* TODO transform this in class destructor*/
 template <typename T>
 void unload_mesh(std::vector<T>& details)
 {

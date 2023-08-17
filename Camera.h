@@ -6,7 +6,7 @@
 class camera
 {
 public:
-	camera(GLuint shader, const int width, const int height);
+	camera(GLuint shader, const int width, const int height, const glm::vec3& eye_pos, const glm::vec3& center_pos);
 	~camera();
 	void on_render();
 private:

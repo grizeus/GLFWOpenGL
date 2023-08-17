@@ -1,6 +1,6 @@
 #include "Camera.h"
 
-camera::camera(GLuint shader, const int width, const int height, const glm::vec3& position, const glm::vec3& look_at)
+camera::camera(GLuint shader, const int width, const int height, const glm::vec3& eye_pos, const glm::vec3& center_pos)
 {
     m_matrix_id = glGetUniformLocation(shader, "MVP");
 
@@ -13,10 +13,8 @@ camera::camera(GLuint shader, const int width, const int height, const glm::vec3
 
     // Camera matrix
     glm::mat4 View = glm::lookAt(
-        // glm::vec3(4, 3, -3), // Camera is at (4,3,-3), in World Space
-        position,
-        // glm::vec3(0, 0, 0), // and looks at the origin
-        look_at
+        eye_pos,
+        center_pos,
         glm::vec3(0, 1, 0)  // Head is up (set to 0,-1,0 to look upside-down)
     );
     // Model matrix : an identity matrix (model will be at the origin)

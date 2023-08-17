@@ -12,16 +12,6 @@ inline void draw(const std::vector<draw_details>& details)
 	}
 }
 
-inline void strip_draw(const std::vector<draw_strip_details>& details)
-{
-	for (const auto& d : details)
-	{
-		glBindVertexArray(d.vao);
-		glDrawArrays(GL_TRIANGLE_STRIP, 0, d.vert_count);
-	}
-	glBindVertexArray(0);
-}
-
 inline void draw_elems(const std::vector<draw_details>& details)
 {
 	for (const auto& d : details) 

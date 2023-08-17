@@ -21,10 +21,3 @@ void GLSL_shader::delete_shader()
     glDeleteProgram(m_handle);
     m_handle = -1;
 }
-
-void GLSL_shader::create_shader(const char* vert, const char* frag)
-{
-    if (m_handle != -1)
-        throw("delete previous shader first");
-    m_handle = load_shader(vert, frag);
-}
