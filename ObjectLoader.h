@@ -55,7 +55,7 @@ inline void load_obj(const char* path, std::vector<GLfloat>& vertices)
 			parts.push_back(part3);
 		}
 	}
-	for (auto p : parts)
+	for (auto& p : parts)
 	{
 		std::istringstream iss(p);
 		std::string i1, i2, i3;
@@ -69,7 +69,7 @@ inline void load_obj(const char* path, std::vector<GLfloat>& vertices)
 	for (auto& i : indices)
 	{
 		if (i % 3 == 2)
-		{
+		{    
 			vertices.push_back(raw_v[indices[i]]);
 		}
 		else if (i % 3 == 1)
@@ -85,6 +85,7 @@ inline void load_obj(const char* path, std::vector<GLfloat>& vertices)
 
 inline void load_vert_and_ind(const char* path, std::vector<GLfloat>& raw_v, std::vector<GLuint>& indices)
 {
+
 	std::vector<std::string> parts;
 	std::stringstream ss(read_to_string(path));
 	std::string line;
@@ -111,7 +112,7 @@ inline void load_vert_and_ind(const char* path, std::vector<GLfloat>& raw_v, std
 			parts.push_back(part3);
 		}
 	}
-	for (auto p : parts)
+	for (auto& p : parts)
 	{
 		std::istringstream iss(p);
 		std::string i1, i2, i3;

@@ -4,11 +4,11 @@ camera::camera(GLuint shader, const int width, const int height)
 {
     m_matrix_id = glGetUniformLocation(shader, "MVP");
 
-    // Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
+    // Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 1000 units
     float ASPECT_RATIO = static_cast<float>(width) / static_cast<float>(height);
     constexpr float FOV = glm::radians(45.0f);
     constexpr float NEAR = 0.1f;
-    constexpr float FAR = 100.0f;
+    constexpr float FAR = 1000.0f;
     glm::mat4 Projection = glm::perspective(FOV, ASPECT_RATIO, NEAR, FAR);
 
     // Camera matrix

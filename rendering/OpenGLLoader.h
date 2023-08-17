@@ -1,14 +1,9 @@
 #pragma once
-#ifdef _WIN32
 #include <glad/glad.h>
-#elif __linux__
-#include <GLES3/gl3.h>
-#include <GL/gl.h>
-#endif
 #include <vector>
 #include "../DrawDetails.h"
 
-draw_details upload_mesh_array(const std::vector<GLfloat>& verts)
+inline draw_details upload_mesh_array(const std::vector<GLfloat>& verts)
 {
 	if (verts.empty())
 		throw ("Draw details is empty");
@@ -27,7 +22,7 @@ draw_details upload_mesh_array(const std::vector<GLfloat>& verts)
 	return draw_details(vao, static_cast<GLuint>(verts.size()));
 }
 
-draw_details upload_mesh_elements(const std::vector<GLfloat>& verts, const std::vector<GLuint>& indices)
+inline draw_details upload_mesh_elements(const std::vector<GLfloat>& verts, const std::vector<GLuint>& indices)
 {
 	GLuint vao, vbo, ebo;
 	glGenVertexArrays(1, &vao);
@@ -54,7 +49,7 @@ draw_details upload_mesh_elements(const std::vector<GLfloat>& verts, const std::
 	return draw_details(vao, static_cast<GLuint>(indices.size()));
 }
 
-draw_details upload_mesh_elems_cols(const std::vector<GLfloat>& verts, const std::vector<GLfloat>& colors, const std::vector<GLuint>& indices)
+inline draw_details upload_mesh_elems_cols(const std::vector<GLfloat>& verts, const std::vector<GLfloat>& colors, const std::vector<GLuint>& indices)
 {
 	if (verts.empty() || colors.empty() || indices.empty())
 		throw ("Draw details is empty");
@@ -93,6 +88,9 @@ draw_details upload_mesh_elems_cols(const std::vector<GLfloat>& verts, const std
 	// Unbind VAO and VBO
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	/*glDeleteBuffers(2, vbo);
+	glDeleteBuffers(1, &ebo);*/
+
 
 	return draw_details(vao, static_cast<GLuint>(indices.size()));
 }

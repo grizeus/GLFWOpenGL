@@ -1,9 +1,5 @@
 #pragma once
-#ifdef _WIN32
 #include <glad/glad.h>
-#elif __linux__
-#include <GL/gl.h>
-#endif
 #include <glm/glm.hpp>
 #include <ostream>
 #include "ShaderLoader.h"

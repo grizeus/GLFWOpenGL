@@ -2,8 +2,7 @@
 #ifdef _WIN32
 #include <glad/glad.h>
 #elif __linux__
-#include <GL/gl.h>
-#include <GL/glext.h>
+#include <glad/glad.h>
 #endif
 #include <vector>
 #include <stdio.h>
