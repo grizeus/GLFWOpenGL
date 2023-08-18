@@ -1,8 +1,9 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include "events/EventBus.h"
 #include "Camera.h"
-#include "Callbacks.h"
+// #include "Callbacks.h"
 #include "Utilities.h"
 #include "Renderer.h"
 #include "Input.h"
@@ -20,7 +21,6 @@
 
 int main(int argc, char** argv)
 {
-    glfwSetErrorCallback(glfw_error_callback);
     const int WINDOW_WIDTH = 800;
     const int WINDOW_HEIGHT = 600;
 
@@ -29,11 +29,8 @@ int main(int argc, char** argv)
 
     print_GL_info();
     GLFWwindow* window = renderer.get_window().get();
-
-    glfwSetWindowCloseCallback(window, glfw_window_close_callback);
-    glfwSetFramebufferSizeCallback(window, glfw_framebuffer_size_callback);
-    glfwSetCursorPosCallback(window, glfw_mouse_movement_callback);
-    glfwSetKeyCallback(window, glfw_key_callback);
+    
+    event_bus bus(renderer.get_window());
 
     std::string vert_shader = read_to_string("shaders\\vert_2d.glsl");
     std::string frag_shader = read_to_string("shaders\\frag_base.glsl");

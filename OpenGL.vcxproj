@@ -128,6 +128,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="events\EventBus.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="shaders\Shader.cpp" />
@@ -136,6 +137,10 @@
     <ClInclude Include="Callbacks.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="DrawDetails.h" />
+    <ClInclude Include="events\Event.h" />
+    <ClInclude Include="events\EventBus.h" />
+    <ClInclude Include="events\EventSubscriber.h" />
+    <ClInclude Include="events\KeyCodes.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="ObjectLoader.h" />
     <ClInclude Include="Query.h" />
