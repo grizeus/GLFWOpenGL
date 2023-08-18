@@ -1,5 +1,5 @@
 #include "Renderer.h"
-#include "Utilities.h"
+#include "../utilities/Utilities.h"
 
 #include <stdexcept>
 

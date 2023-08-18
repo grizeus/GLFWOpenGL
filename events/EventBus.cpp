@@ -15,7 +15,7 @@ namespace
 	inline void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 	{
 		event_bus* handler = reinterpret_cast<event_bus*>(glfwGetWindowUserPointer(window));
-		//glViewport(0, 0, width, height);
+		handler->on_window_resize(width, height);
 	}
 	inline void cursor_position_callback(GLFWwindow* window, double x_pos, double y_pos)
 	{
@@ -45,5 +45,15 @@ void event_bus::on_mouse_moved(double xpos, double ypos)
 	if (subscribers != m_subscribers.end())
 	{
 		//do stuff
+	}
+}
+
+void event_bus::on_window_resize(int width, int height)
+{
+	std::cout << "Window resize to" << width << ":" << height << std::endl;
+	auto subscribers = m_subscribers.find(etype::window_resize);
+	if (subscribers != m_subscribers.end())
+	{
+		// do stuff
 	}
 }

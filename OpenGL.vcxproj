@@ -127,30 +127,30 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="events\EventBus.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="object\Object.cpp" />
+    <ClCompile Include="rendering\Camera.cpp" />
+    <ClCompile Include="rendering\Renderer.cpp" />
     <ClCompile Include="shaders\Shader.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Callbacks.h" />
-    <ClInclude Include="Camera.h" />
-    <ClInclude Include="DrawDetails.h" />
     <ClInclude Include="events\Event.h" />
     <ClInclude Include="events\EventBus.h" />
     <ClInclude Include="events\EventSubscriber.h" />
     <ClInclude Include="events\KeyCodes.h" />
-    <ClInclude Include="Input.h" />
-    <ClInclude Include="ObjectLoader.h" />
-    <ClInclude Include="Query.h" />
-    <ClInclude Include="Renderer.h" />
+    <ClInclude Include="object\DrawDetails.h" />
+    <ClInclude Include="object\Object.h" />
+    <ClInclude Include="object\ObjectLoader.h" />
+    <ClInclude Include="rendering\Camera.h" />
     <ClInclude Include="rendering\OpenGLDraw.h" />
     <ClInclude Include="rendering\OpenGLLoader.h" />
+    <ClInclude Include="rendering\Renderer.h" />
     <ClInclude Include="rendering\ShaderLoader.h" />
     <ClInclude Include="shaders\Shader.h" />
-    <ClInclude Include="Utilities.h" />
-    <ClInclude Include="Version.h" />
+    <ClInclude Include="utilities\Query.h" />
+    <ClInclude Include="utilities\Utilities.h" />
+    <ClInclude Include="utilities\Version.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\vert_2d.glsl" />

@@ -10,7 +10,7 @@ public:
 	virtual void on_event(const event& e) = 0;
 };
 
-class test_systen : public event_subscriber
+class test_system : public event_subscriber
 {
 public:
 	virtual void on_event(const event& e) override

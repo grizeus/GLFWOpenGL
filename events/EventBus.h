@@ -19,6 +19,7 @@ public:
 	event_bus(std::shared_ptr<GLFWwindow> window);
 
 	void on_mouse_moved(double x_pos, double y_pos);
+	void on_window_resize(int width, int height);
 
 private:
 	std::unordered_map<etype, subscribers_container> m_subscribers;
