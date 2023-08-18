@@ -2,19 +2,14 @@
 #include <GLFW/glfw3.h>
 
 #include "events/EventBus.h"
-#include "Camera.h"
-// #include "Callbacks.h"
-#include "Utilities.h"
-#include "Renderer.h"
-#include "Input.h"
-#include "DrawDetails.h"
-#include "Version.h"
-#include "Query.h"
-#include "ObjectLoader.h"
-#include "shaders/Shader.h"
-#include "rendering/OpenGLDraw.h"
-#include "rendering/OpenGLLoader.h"
+#include "rendering/Camera.h"
+#include "rendering/Renderer.h"
+#include "object/Object.h"
+#include "utilities/Utilities.h"
+#include "utilities/Version.h"
+#include "utilities/Query.h"
 #include "shaders/ShaderLoader.h"
+#include "shaders/Shader.h"
 #include <iostream>
 #include <vector>
 
@@ -41,16 +36,7 @@ int main(int argc, char** argv)
     glm::vec3 eye_pos    = { 4, 3, -3 }; // Camera is at (4,3,-3), in World Space
     glm::vec3 center_pos = { 0, 0, 0 }; // and looks at the origin
     camera camera(shader->get_handle(), WINDOW_WIDTH, WINDOW_HEIGHT, eye_pos, center_pos);
-
-    /*TODO
-    {
-        Object cube("media\\cube.obj");
-    }
-    */
-
-    std::vector<GLfloat> verts_data;
-    // load_obj("media\\cube.obj", verts_data);
-    load_obj("media\\suzanna.obj", verts_data);
+    object suz("media\\suzanna.obj");
     static const GLfloat color_buffer_data[] = {
         0.583f,  0.771f,  0.014f,
         0.609f,  0.115f,  0.436f,
@@ -91,28 +77,20 @@ int main(int argc, char** argv)
     };
     
     std::vector<GLfloat> color_data(std::begin(color_buffer_data), std::end(color_buffer_data));
-
-    std::vector<draw_details> cube;
-    cube.push_back(upload_mesh(verts_data, color_data));
-    // cube.push_back(upload_mesh_elems_cols(verts_data, color_data, indices));
-
+    suz.set_colors(color_data);
+    suz.upload_mesh();
+  
     while (!glfwWindowShouldClose(window))
     {
-        process_input(window);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
         shader->use();
         camera.on_render();
+        suz.draw();
 
-        /* TODO
-            cube.draw();
-        */
-
-        draw(cube);
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
-    unload_mesh(cube);
 
     return 0;
 }

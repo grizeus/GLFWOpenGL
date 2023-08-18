@@ -1,14 +1,10 @@
 ﻿#pragma once
-#ifdef _WIN32
 #include <glad/glad.h>
-#elif __linux__
-#include <glad/glad.h>
-#endif
 #include <vector>
 #include <stdio.h>
 #include <iostream>
 
-const char* get_type_string(GLenum type) 
+inline const char* get_type_string(GLenum type) 
 {
     switch (type) {
     case GL_FLOAT:

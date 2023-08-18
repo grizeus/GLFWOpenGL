@@ -1,5 +1,5 @@
 #include "Renderer.h"
-#include "Utilities.h"
+#include "../utilities/Utilities.h"
 
 #include <stdexcept>
 
@@ -21,7 +21,7 @@ renderer::renderer()
 
 renderer::~renderer()
 {
-    write_log("Program ended.\n");
+    glfwDestroyWindow(m_window.get());
     glfwTerminate();
 }
 

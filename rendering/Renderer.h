@@ -1,9 +1,5 @@
 #pragma once
-#ifdef _WIN32
 #include <glad/glad.h>
-#elif __linux__
-#include <glad/glad.h>
-#endif
 #include <GLFW/glfw3.h>
 
 #include <memory>
