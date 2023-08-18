@@ -37,6 +37,7 @@ int main(int argc, char** argv)
     glm::vec3 center_pos = { 0, 0, 0 }; // and looks at the origin
     camera camera(shader->get_handle(), WINDOW_WIDTH, WINDOW_HEIGHT, eye_pos, center_pos);
     object suz("media\\suzanna.obj");
+
     static const GLfloat color_buffer_data[] = {
         0.583f,  0.771f,  0.014f,
         0.609f,  0.115f,  0.436f,
@@ -79,7 +80,7 @@ int main(int argc, char** argv)
     std::vector<GLfloat> color_data(std::begin(color_buffer_data), std::end(color_buffer_data));
     suz.set_colors(color_data);
     suz.upload_mesh();
-  
+
     while (!glfwWindowShouldClose(window))
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -91,6 +92,6 @@ int main(int argc, char** argv)
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
-
+      
     return 0;
 }
