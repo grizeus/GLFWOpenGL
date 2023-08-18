@@ -33,9 +33,10 @@ int main(int argc, char** argv)
 
     query_input_attribs(shader->get_handle());
     query_uniforms(shader->get_handle());
-    glm::vec3 eye_pos    = { 4, 3, -3 }; // Camera is at (4,3,-3), in World Space
-    glm::vec3 center_pos = { 0, 0, 0 }; // and looks at the origin
-    camera camera(shader->get_handle(), WINDOW_WIDTH, WINDOW_HEIGHT, eye_pos, center_pos);
+    glm::vec3 cam_pos   = { 4, 3, -3 }; // Camera is at (4,3,-3), in World Space
+    glm::vec3 cam_front = { -4, -3, 3 };
+    glm::vec3 cam_up    = { 0, -1, 0 };
+    camera camera(shader->get_handle(), WINDOW_WIDTH, WINDOW_HEIGHT, cam_pos, cam_front + cam_front, cam_up);
     object suz("media\\suzanna.obj");
 
     static const GLfloat color_buffer_data[] = {
@@ -81,11 +82,23 @@ int main(int argc, char** argv)
     suz.set_colors(color_data);
     suz.upload_mesh();
 
+    float last_time = static_cast<float>(glfwGetTime());
     while (!glfwWindowShouldClose(window))
     {
+        // set time ticks
+        float cur_time = static_cast<float>(glfwGetTime());
+        float delta_time = cur_time - last_time;
+        last_time = cur_time;
+
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
         shader->use();
+        glm::mat4 projection = glm::perspective(glm::radians(camera.get_fov()), (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.1f, 100.0f);
+        //shader.setMat4("projection", projection);
+
+        glm::mat4 view = glm::lookAt(cam_pos, cam_pos + cam_front, cam_up);
+        //shader.setMat4("view", view);
+
         camera.on_render();
         suz.draw();
 
