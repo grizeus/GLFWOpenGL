@@ -41,8 +41,8 @@ int main(int argc, char** argv)
 
     query_input_attribs(shader->get_handle());
     query_uniforms(shader->get_handle());
-    glm::vec3 eye_pos = { 4, 3, -3 }; // Camera is at (4,3,-3), in World Space
-    glm::vec3 center_pos = { 0,0,0 }; // and looks at the origin
+    glm::vec3 eye_pos    = { 4, 3, -3 }; // Camera is at (4,3,-3), in World Space
+    glm::vec3 center_pos = { 0, 0, 0 }; // and looks at the origin
     camera camera(shader->get_handle(), WINDOW_WIDTH, WINDOW_HEIGHT, eye_pos, center_pos);
 
     /*TODO
@@ -52,9 +52,8 @@ int main(int argc, char** argv)
     */
 
     std::vector<GLfloat> verts_data;
-    std::vector<GLuint> indices;
-    // load_vert_and_ind("media\\cube.obj", verts_data, indices);
-    load_obj("media\\cube.obj", verts_data);
+    // load_obj("media\\cube.obj", verts_data);
+    load_obj("media\\suzanna.obj", verts_data);
     static const GLfloat color_buffer_data[] = {
         0.583f,  0.771f,  0.014f,
         0.609f,  0.115f,  0.436f,
@@ -97,7 +96,7 @@ int main(int argc, char** argv)
     std::vector<GLfloat> color_data(std::begin(color_buffer_data), std::end(color_buffer_data));
 
     std::vector<draw_details> cube;
-    cube.push_back(up)
+    cube.push_back(upload_mesh(verts_data, color_data));
     // cube.push_back(upload_mesh_elems_cols(verts_data, color_data, indices));
 
     while (!glfwWindowShouldClose(window))
@@ -112,7 +111,7 @@ int main(int argc, char** argv)
             cube.draw();
         */
 
-        draw_elems(cube);
+        draw(cube);
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
