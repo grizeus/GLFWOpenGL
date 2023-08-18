@@ -3,11 +3,11 @@
 #include <vector>
 #include "../DrawDetails.h"
 
-inline draw_details upload_mesh_array(const std::vector<GLfloat>& verts)
+inline draw_details upload_mesh_array(const std::vector<GLfloat>& verts, const std::vector<GLfloat>& colors)
 {
-	if (verts.empty())
+	if (verts.empty() || colors.empty())
 		throw ("Draw details is empty");
-	GLuint vao, vbo;
+	GLuint vao, ;
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
 

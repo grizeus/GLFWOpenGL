@@ -53,7 +53,8 @@ int main(int argc, char** argv)
 
     std::vector<GLfloat> verts_data;
     std::vector<GLuint> indices;
-    load_vert_and_ind("media\\cube.obj", verts_data, indices);
+    // load_vert_and_ind("media\\cube.obj", verts_data, indices);
+    load_obj("media\\cube.obj", verts_data);
     static const GLfloat color_buffer_data[] = {
         0.583f,  0.771f,  0.014f,
         0.609f,  0.115f,  0.436f,
@@ -96,7 +97,8 @@ int main(int argc, char** argv)
     std::vector<GLfloat> color_data(std::begin(color_buffer_data), std::end(color_buffer_data));
 
     std::vector<draw_details> cube;
-    cube.push_back(upload_mesh_elems_cols(verts_data, color_data, indices));
+    cube.push_back(up)
+    // cube.push_back(upload_mesh_elems_cols(verts_data, color_data, indices));
 
     while (!glfwWindowShouldClose(window))
     {

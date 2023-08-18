@@ -14,15 +14,13 @@ struct vec3
 	inline GLfloat return_x() { return m_x; }
 	inline GLfloat return_y() { return m_y; }
 	inline GLfloat return_z() { return m_z; }
-//private:
+private:
 	GLfloat m_x, m_y, m_z;
 };
 
 inline void load_obj(const char* path, std::vector<GLfloat>& vertices)
 {
-	std::vector<GLfloat> raw_v;
-	std::vector<GLfloat> raw_vn;
-	std::vector<GLfloat> raw_vt;
+	std::vector<vec3> raw_v;
 	std::vector<int> indices;
 	std::vector<std::string> parts;
 	std::stringstream ss(read_to_string(path));
@@ -35,28 +33,7 @@ inline void load_obj(const char* path, std::vector<GLfloat>& vertices)
 			char c;
 			GLfloat x, y, z;
 			iss >> c >> x >> y >> z;
-			raw_v.push_back(x);
-			raw_v.push_back(y);
-			raw_v.push_back(z);
-		}
-		else if (line.substr(0, 2) == "vn")
-		{
-			std::istringstream iss(line);
-			std::string c;
-			GLfloat x, y, z;
-			iss >> c >> x >> y >> z;
-			raw_vn.push_back(x);
-			raw_vn.push_back(y);
-			raw_vn.push_back(z);
-		}
-		else if (line.substr(0, 2) == "vt")
-		{
-			std::istringstream iss(line);
-			std::string c;
-			GLfloat x, y;
-			iss >> c >> x >> y;
-			raw_vt.push_back(x);
-			raw_vt.push_back(y);
+			raw_v.push_back(vec3(x, y, z));
 		}
 		else if (line[0] == 'f')
 		{
@@ -69,6 +46,7 @@ inline void load_obj(const char* path, std::vector<GLfloat>& vertices)
 			parts.push_back(part3);
 		}
 	}
+	// separate 1 index in triplet for vertex coord
 	for (auto& p : parts)
 	{
 		std::istringstream iss(p);
@@ -77,23 +55,12 @@ inline void load_obj(const char* path, std::vector<GLfloat>& vertices)
 		std::getline(iss, i2, '/');
 		std::getline(iss, i3, '/');
 		indices.push_back(std::stoi(i1));
-		indices.push_back(std::stoi(i2));
-		indices.push_back(std::stoi(i3));
 	}
 	for (auto& i : indices)
 	{
-		if (i % 3 == 2)
-		{    
-			vertices.push_back(raw_v[indices[i]]);
-		}
-		else if (i % 3 == 1)
-		{
-			vertices.push_back(raw_vn[indices[i]]);
-		}
-		else if (i % 3 == 0)
-		{
-			vertices.push_back(raw_vt[indices[i]]);
-		}
+		vertices.push_back(raw_v[i - 1].return_x());
+		vertices.push_back(raw_v[i - 1].return_y());
+		vertices.push_back(raw_v[i - 1].return_z());
 	}
 }
 
@@ -132,16 +99,13 @@ inline void load_vert_and_ind(const char* path, std::vector<GLfloat>& verts, std
 		std::getline(iss, i2, '/');
 		std::getline(iss, i3, '/');
 		indices.push_back(std::stoi(i1));
-		indices.push_back(std::stoi(i2));
-		indices.push_back(std::stoi(i3));
+		//indices.push_back(std::stoi(i2));
+		//indices.push_back(std::stoi(i3));
 	}
 	for (auto& i : indices)
 	{
-		if (i % 3 == 2)
-		{
-			verts.push_back(positions[indices[i] - 1].m_x);
-			verts.push_back(positions[indices[i] - 1].m_y);
-			verts.push_back(positions[indices[i] - 1].m_z);
-		}
+		verts.push_back(positions[i - 1].return_x());
+		verts.push_back(positions[i - 1].return_y());
+		verts.push_back(positions[i - 1].return_z());
 	}
 }
