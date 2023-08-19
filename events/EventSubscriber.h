@@ -16,6 +16,7 @@ class camera_sub : public event_subscriber
 public:
 	virtual void on_event(const event& e) override
 	{
+
 		// TODO logic here
 	}
 };
