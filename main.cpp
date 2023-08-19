@@ -17,23 +17,20 @@
 
 int main(int argc, char** argv)
 {
-    const int WINDOW_WIDTH = 800;
-    const int WINDOW_HEIGHT = 600;
-
-    renderer renderer;
-    renderer.create_window(extract_version(argv[0]), WINDOW_WIDTH, WINDOW_HEIGHT);
+    renderer renderer_handle;
+    renderer_handle.create_window(extract_version(argv[0]));
 
     print_GL_info();
-    GLFWwindow* window = renderer.get_window().get();
+    GLFWwindow* window = renderer_handle.get_window().get();
     
-    event_bus bus(renderer.get_window());
-    sub_ptr input_handler = std::shared_ptr<event_subscriber>(new input (renderer.get_window()));
+    event_bus bus(renderer_handle.get_window());
+    sub_ptr input_handler = std::shared_ptr<event_subscriber>(new input (renderer_handle.get_window()));
     bus.subscribe(input_handler, etype::key_pressed);
     std::string vert_shader = read_to_string("shaders\\vert_2d.glsl");
     std::string frag_shader = read_to_string("shaders\\frag_base.glsl");
     std::shared_ptr<GLSL_shader> shader = std::make_shared<GLSL_shader>(vert_shader.c_str(), frag_shader.c_str());
 
-    std::shared_ptr<camera> camera_handler(new camera(shader->get_handle(), WINDOW_WIDTH, WINDOW_HEIGHT));
+    std::shared_ptr<camera> camera_handler(new camera(shader->get_handle(), renderer_handle.get_width(), renderer_handle.get_height()));
     bus.subscribe(camera_handler, etype::window_resize);
     bus.subscribe(camera_handler, etype::key_pressed);
     query_input_attribs(shader->get_handle());
@@ -82,7 +79,6 @@ int main(int argc, char** argv)
     
     vec_glfloat color_data(std::begin(color_buffer_data), std::end(color_buffer_data));
     suz.set_colors(color_data);
-    //suz.upload_mesh(shader->get_handle());
     suz.upload_textured_mesh(shader->get_handle());
     
     double last_time = static_cast<float>(glfwGetTime());

@@ -25,10 +25,11 @@ renderer::~renderer()
     glfwTerminate();
 }
 
-void renderer::create_window(const std::string& title, int width, int height)
+
+void renderer::create_window(const std::string& title)
 {
     // create window
-    m_window = std::shared_ptr<GLFWwindow>(glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr), glfwDestroyWindow);
+    m_window = std::shared_ptr<GLFWwindow>(glfwCreateWindow(m_width, m_height, title.c_str(), nullptr, nullptr), glfwDestroyWindow);
     if (!m_window)
     {
         glfwTerminate();
@@ -42,7 +43,7 @@ void renderer::create_window(const std::string& title, int width, int height)
         throw std::runtime_error("Failed to initialize GLAD");
     }
     
-    glViewport(0, 0, width, height);
+    glViewport(0, 0, m_width, m_height);
     
     glClearColor(0.3f, 0.3f, 0.65f, 0.f);
     glEnable(GL_DEPTH_TEST);
@@ -51,7 +52,7 @@ void renderer::create_window(const std::string& title, int width, int height)
     //glfwSetInputMode(m_window.get(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 }
 
-window_ptr renderer::get_window()
+window_ptr renderer::get_window() const
 {
 	return m_window;
 }

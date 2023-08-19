@@ -1,5 +1,6 @@
 #include "Camera.h"
 
+
 camera::camera(GLuint shader, const int width, const int height)
     : m_cam_pos(4.0f, 3.0f, -3.0f)
     , m_cam_front(-4.0f, -3.0f, 3.0f)

@@ -79,7 +79,6 @@ object::object(const char* path)
 			parts.push_back(part3);
 		}
 	}
-	// separate 1 index in triplet for vertex coord
 	for (auto& p : parts)
 	{
 		std::istringstream iss(p);
@@ -91,17 +90,20 @@ object::object(const char* path)
 		indices.push_back(std::stoi(i2));
 		indices.push_back(std::stoi(i3));
 	}
+	// vertices
 	for (int i = 0; i < indices.size(); i += 3)
 	{
 		m_vertices.push_back(raw_v[indices[i] - 1].return_x());
 		m_vertices.push_back(raw_v[indices[i] - 1].return_y());
 		m_vertices.push_back(raw_v[indices[i] - 1].return_z());
 	}
+	// uv
 	for (int i = 1; i < indices.size(); i += 3)
 	{
 		m_uv.push_back(raw_vt[indices[i] - 1].return_x());
 		m_uv.push_back(raw_vt[indices[i] - 1].return_y());
 	}
+	// normales
 	for (int i = 2; i < indices.size(); i += 3)
 	{
 		m_normales.push_back(raw_vn[indices[i] - 1].return_x());
@@ -112,6 +114,12 @@ object::object(const char* path)
 
 void object::load_textured_obj(const char* path)
 {
+	if (!m_vertices.empty() || !m_uv.empty() || !m_normales.empty())
+	{
+		m_vertices.clear();
+		m_uv.clear();
+		m_normales.clear();
+	}
 	std::vector<vec3> raw_v;
 	std::vector<vec3> raw_vn;
 	std::vector<vec2> raw_vt;
@@ -201,10 +209,9 @@ GLuint object::load_BMP(const char* imagepath) {
 
 	// Open the file
 	FILE* file;
-	fopen_s(&file, imagepath, "r");
+	fopen_s(&file, imagepath, "rb");
 	if (!file) {
-		printf("%s could not be opened. Are you in the right directory ? Don't forget to read the FAQ !\n", imagepath);
-		getchar();
+		throw std::runtime_error("File could not be opened. Are you in the right directory ? Don't forget to read the FAQ !\n");
 		return 0;
 	}
 
