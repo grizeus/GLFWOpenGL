@@ -94,10 +94,10 @@ int main(int argc, char** argv)
         
         shader->use();
         glm::mat4 projection = glm::perspective(glm::radians(camera.get_fov()), (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.1f, 100.0f);
-        //shader.setMat4("projection", projection);
+        shader->set_mat4("projection", projection);
 
         glm::mat4 view = glm::lookAt(cam_pos, cam_pos + cam_front, cam_up);
-        //shader.setMat4("view", view);
+        shader->set_mat4("view", view);
 
         camera.on_render();
         suz.draw();
