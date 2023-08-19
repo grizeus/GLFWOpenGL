@@ -5,7 +5,7 @@
 
 void process_input(GLFWwindow* window, float delta_time, camera cam)
 {
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+    /*if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 
     float camera_speed = static_cast<float>(2.5 * delta_time);
@@ -28,5 +28,5 @@ void process_input(GLFWwindow* window, float delta_time, camera cam)
     {
         cam.m_cam_pos += glm::normalize(glm::cross(cam.m_cam_front, cam.m_cam_up)) * camera_speed;
         std::cout << "cam pos " << cam.m_cam_pos.x << ":" << cam.m_cam_pos.y << ":" << cam.m_cam_pos.z << "\n";
-    }
+    }*/
 }

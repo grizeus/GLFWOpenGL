@@ -21,28 +21,55 @@ public:
 	virtual std::string to_string() const = 0;
 };
 
-class mouse_moved_event : public event
+class window_event : public event
+{
+public:
+	inline int get_width() const { return m_width; }
+	inline int get_height() const { return m_height; }
+protected:
+	window_event(const int width, const int height)
+		: m_width(width), m_height(height)
+	{}
+
+	int m_width;
+	int m_height;
+};
+
+class mouse_event : public event
 {
 public:
 	inline double get_x() const { return m_x; }
 	inline double get_y() const { return m_y; }
 
-	mouse_moved_event(const double x,  const double y)
+protected:
+	mouse_event(const double x, const double y)
 		: m_x(x), m_y(y)
+	{}
+
+	double m_x;
+	double m_y;
+};
+
+class mouse_moved_event : public mouse_event
+{
+public:
+
+	mouse_moved_event(const double x,  const double y)
+		: mouse_event(x, y)
 	{}
 
 	// TODO
 	std::string to_string() const override
 	{
 		std::stringstream ss;
-		ss << "key_pressed_event: " << m_x << " (repeat=" << m_y << ")";
+		ss << "mouse_moved_event on: " << m_x << ":" << m_y ;
 		return ss.str();
 	}
 private:
-
 	double m_x;
 	double m_y;
 };
+
 class key_event : public event
 {
 public:
@@ -103,6 +130,20 @@ public:
 	}
 };
 
+class window_resize_event : public window_event
+{
+public:
+	window_resize_event(int width, int height)
+		: window_event(width, height)
+	{ }
+
+	std::string to_string() const override
+	{
+		std::stringstream ss;
+		ss << "window_resize_event to: " << m_width << ":" << m_height;
+		return ss.str();
+	}
+};
 inline std::ostream& operator<<(std::ostream& os, const event& e)
 {
 	return os << e.to_string();

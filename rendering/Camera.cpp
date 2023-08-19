@@ -31,3 +31,8 @@ void camera::on_render()
 {
     glUniformMatrix4fv(m_matrix_id, 1, GL_FALSE, &m_mvp[0][0]);
 }
+
+void camera::on_event(const event& e)
+{
+    
+}
