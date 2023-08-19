@@ -10,11 +10,12 @@ public:
 	virtual void on_event(const event& e) = 0;
 };
 
-class test_system : public event_subscriber
+// TODO inherit old camera
+class camera_sub : public event_subscriber
 {
 public:
 	virtual void on_event(const event& e) override
 	{
-		std::cout << e << std::endl;
+		// TODO logic here
 	}
 };

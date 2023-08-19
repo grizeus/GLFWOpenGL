@@ -21,6 +21,28 @@ public:
 	virtual std::string to_string() const = 0;
 };
 
+class mouse_moved_event : public event
+{
+public:
+	inline double get_x() const { return m_x; }
+	inline double get_y() const { return m_y; }
+
+	mouse_moved_event(const double x,  const double y)
+		: m_x(x), m_y(y)
+	{}
+
+	// TODO
+	std::string to_string() const override
+	{
+		std::stringstream ss;
+		ss << "key_pressed_event: " << m_x << " (repeat=" << m_y << ")";
+		return ss.str();
+	}
+private:
+
+	double m_x;
+	double m_y;
+};
 class key_event : public event
 {
 public:

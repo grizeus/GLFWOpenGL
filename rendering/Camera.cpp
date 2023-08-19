@@ -1,6 +1,7 @@
 #include "Camera.h"
 
-camera::camera(GLuint shader, const int width, const int height, const glm::vec3& cam_pos, const glm::vec3& cam_front, const glm::vec3& cam_up)
+camera::camera(GLuint shader, const int width, const int height)
+    :m_cam_pos(0.0f, 0.0f, 3.0f), m_cam_front(0.0f, 0.0f, -1.0f), m_cam_up(0.0f, 1.0f, 0.0f)
 {
     m_matrix_id = glGetUniformLocation(shader, "MVP");
 
@@ -13,9 +14,9 @@ camera::camera(GLuint shader, const int width, const int height, const glm::vec3
 
     // Camera matrix
     glm::mat4 View = glm::lookAt(
-        cam_pos,
-        cam_pos + cam_front,
-        cam_up  // Head is up (set to 0,-1,0 to look upside-down)
+        m_cam_pos,
+        m_cam_pos + m_cam_front,
+        m_cam_up  // Head is up (set to 0,-1,0 to look upside-down)
     );
     // Model matrix : an identity matrix (model will be at the origin)
     glm::mat4 Model = glm::mat4(1.0f);

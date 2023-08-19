@@ -2,7 +2,7 @@
 
 #include <GLFW/glfw3.h>
 #include <iostream>
-
+#include <glm/glm.hpp>
 
 namespace
 {
@@ -17,13 +17,14 @@ namespace
 		event_bus* handler = reinterpret_cast<event_bus*>(glfwGetWindowUserPointer(window));
 		handler->on_window_resize(width, height);
 	}
-	inline void cursor_position_callback(GLFWwindow* window, double x_pos, double y_pos)
+	inline void cursor_position_callback(GLFWwindow* window, double x_pos_in, double y_pos)
 	{
 		event_bus* handler = reinterpret_cast<event_bus*>(glfwGetWindowUserPointer(window));
-		handler->on_mouse_moved(x_pos, y_pos);
+		handler->on_mouse_moved(x_pos_in, y_pos);
 	}
 	inline void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 	{
+
 	}
 	
 }
@@ -38,13 +39,15 @@ event_bus::event_bus(std::shared_ptr<GLFWwindow> window)
 	glfwSetCursorPosCallback(window.get(), cursor_position_callback);
 }
 
-void event_bus::on_mouse_moved(double xpos, double ypos)
+void event_bus::on_mouse_moved(double x_pos, double y_pos)
 {
-	std::cout << "Mouse moved to " << xpos << ":" << ypos << std::endl;
+	//std::cout << "Mouse moved to " << x_pos_in << ":" << y_pos << std::endl;
 	auto subscribers = m_subscribers.find(etype::mouse_moved);
 	if (subscribers != m_subscribers.end())
 	{
-		//do stuff
+		mouse_moved_event e(x_pos, y_pos);
+		for (auto sub : subscribers->second)
+			sub->on_event(e);
 	}
 }
 

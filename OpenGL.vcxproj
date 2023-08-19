@@ -139,6 +139,7 @@
     <ClInclude Include="events\EventBus.h" />
     <ClInclude Include="events\EventSubscriber.h" />
     <ClInclude Include="events\KeyCodes.h" />
+    <ClInclude Include="Input.h" />
     <ClInclude Include="object\Object.h" />
     <ClInclude Include="rendering\Camera.h" />
     <ClInclude Include="rendering\Renderer.h" />
