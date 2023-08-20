@@ -18,7 +18,22 @@ class event
 public:
 	event() = default;
 	virtual ~event() = default;
+
+	virtual etype get_type() const = 0;
+	virtual const char* get_name() const = 0;
 	virtual std::string to_string() const = 0;
+};
+
+class key_event : public event
+{
+public:
+	inline key_code get_key_code() const { return m_key_code; }
+protected:
+	key_event(const key_code code)
+		: m_key_code(code)
+	{}
+
+	key_code m_key_code;
 };
 
 class window_event : public event
@@ -35,51 +50,35 @@ protected:
 	int m_height;
 };
 
-class mouse_event : public event
+class mouse_moved_event : public event
 {
 public:
-	inline double get_x() const { return m_x; }
-	inline double get_y() const { return m_y; }
-
-protected:
-	mouse_event(const double x, const double y)
-		: m_x(x), m_y(y)
-	{}
-
-	double m_x;
-	double m_y;
-};
-
-class mouse_moved_event : public mouse_event
-{
-public:
-
-	mouse_moved_event(const double x,  const double y)
-		: mouse_event(x, y)
-	{}
-
-	// TODO
+	mouse_moved_event(const double x, const double y)
+		: m_mouse_x(x), m_mouse_y(y)
+	{ }
+	static get_static_type() { return etype::mouse_moved; }
+	etype get_type() const override { return get_static_type(); }
 	std::string to_string() const override
 	{
 		std::stringstream ss;
-		ss << "mouse_moved_event on: " << m_x << ":" << m_y ;
+		ss << "mouse_moved_event on coordinates: " << m_mouse_x << ":" << m_mouse_x;
 		return ss.str();
 	}
 private:
-	double m_x;
-	double m_y;
+	double m_mouse_x;
+	double m_mouse_y;
 };
 
-class key_event : public event
+class mouse_button_event : public mouse_event
 {
 public:
-	inline key_code get_key_code() const { return m_key_code; }
+	virtual ~mouse_button_event() = default;
+	inline key_code get_mouse_button() const { return m_button; }
 protected:
-	key_event(const key_code code)
-		: m_key_code(code)
-	{}
-
-	key_code m_key_code;
+	mouse_button_event(key_code button)
+		: m_button(button)
+	{ }
+	key_code m_button;
 };
 
 class key_pressed_event : public key_event
