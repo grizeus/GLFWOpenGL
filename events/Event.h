@@ -27,37 +27,21 @@ public:
 class key_event : public event
 {
 public:
+	virtual ~key_event() { }
 	inline key_code get_key_code() const { return m_key_code; }
 protected:
-	key_event(const key_code code)
-		: m_key_code(code)
-	{}
+	key_event(const key_code code) : m_key_code(code) { }
 
 	key_code m_key_code;
-};
-
-class window_event : public event
-{
-public:
-	inline int get_width() const { return m_width; }
-	inline int get_height() const { return m_height; }
-protected:
-	window_event(const int width, const int height)
-		: m_width(width), m_height(height)
-	{}
-
-	int m_width;
-	int m_height;
 };
 
 class mouse_moved_event : public event
 {
 public:
-	mouse_moved_event(const double x, const double y)
-		: m_mouse_x(x), m_mouse_y(y)
-	{ }
-	static get_static_type() { return etype::mouse_moved; }
+	mouse_moved_event(const double x, const double y) : m_mouse_x(x), m_mouse_y(y) { }
+	static etype get_static_type() { return etype::mouse_moved; }
 	etype get_type() const override { return get_static_type(); }
+	const char* get_name() const override { return "mouse_moved_ecent"; }
 	std::string to_string() const override
 	{
 		std::stringstream ss;
@@ -69,24 +53,58 @@ private:
 	double m_mouse_y;
 };
 
-class mouse_button_event : public mouse_event
+class mouse_button_event : public event
 {
 public:
 	virtual ~mouse_button_event() = default;
 	inline key_code get_mouse_button() const { return m_button; }
 protected:
-	mouse_button_event(key_code button)
-		: m_button(button)
-	{ }
+	mouse_button_event(key_code button) : m_button(button) { }
 	key_code m_button;
+};
+
+class mouse_button_pressed_event : public mouse_button_event
+{
+public:
+	mouse_button_pressed_event(key_code button) : mouse_button_event(button) { }
+	~mouse_button_pressed_event() = default;
+
+	static etype get_static_type() { return etype::mouse_button_pressed; }
+	etype get_type() const override { return get_static_type(); }
+	const char* get_name() const override { return "mouse_button_pressed_event"; }
+
+	std::string to_string() const override
+	{
+		std::stringstream ss;
+		ss << "mouse_button_pressed_event: " << m_button;
+		return ss.str();
+	}
+};
+
+class mouse_button_released_event : public mouse_button_event
+{
+public:
+	mouse_button_released_event(key_code button) : mouse_button_event(button) { }
+	~mouse_button_released_event() = default;
+	std::string to_string() const override
+	{
+		std::stringstream ss;
+		ss << "mouse_button_released_event: " << m_button;
+		return ss.str();
+	}
+private:
+
 };
 
 class key_pressed_event : public key_event
 {
 public:
-	key_pressed_event(const key_code code, bool is_repeat = false)
-		: key_event(code), m_is_repeat(is_repeat)
-	{}
+	key_pressed_event(const key_code code, bool is_repeat = false) : key_event(code), m_is_repeat(is_repeat) { }
+	~key_pressed_event() = default;
+
+	static etype get_static_type() { return etype::key_pressed; }
+	etype get_type() const override { return get_static_type(); }
+	const char* get_name() const override { return "key_pressed_event"; }
 
 	inline bool is_repeat() const { return m_is_repeat; }
 	std::string to_string() const override
@@ -102,9 +120,12 @@ private:
 class key_released_event : public key_event
 {
 public:
-	key_released_event(const key_code code)
-		: key_event(code)
-	{}
+	key_released_event(const key_code code) : key_event(code) { }
+	~key_released_event() = default;
+
+	static etype get_static_type() { return etype::key_released; }
+	etype get_type() const override { return get_static_type(); }
+	const char* get_name() const override { return "key_relesaed_type"; }
 
 	std::string to_string() const override
 	{
@@ -117,9 +138,11 @@ public:
 class key_typed_event : public key_event
 {
 public:
-	key_typed_event(const key_code code)
-		: key_event(code)
-	{}
+	key_typed_event(const key_code code) : key_event(code) { }
+
+	static etype get_static_type() { return etype::key_typed; }
+	etype get_type() const override { return get_static_type(); }
+	const char* get_name() const override { return "key_typed_event"; }
 
 	std::string to_string() const override
 	{
@@ -129,17 +152,43 @@ public:
 	}
 };
 
-class window_resize_event : public window_event
+class window_resize_event : public event
 {
 public:
-	window_resize_event(int width, int height)
-		: window_event(width, height)
-	{ }
+	~window_resize_event() = default;
+
+	inline int get_width() const { return m_width; }
+	inline int get_height() const { return m_height; }
+
+	static etype get_static_type() { return etype::window_resize; }
+	etype get_type() const override { return get_static_type(); }
+	const char* get_name() const override { return "window_resize_event"; }
 
 	std::string to_string() const override
 	{
 		std::stringstream ss;
 		ss << "window_resize_event to: " << m_width << ":" << m_height;
+		return ss.str();
+	}
+private:
+	int m_width = 0;
+	int m_height = 0;
+};
+
+class window_closed_event : public event
+{
+public:
+	window_closed_event() = default;
+	~window_closed_event() = default;
+
+	static etype get_static_type() { return etype::window_close; }
+	etype get_type() const override { return get_static_type(); }
+	const char* get_name() const override { return "window_closed_event"; }
+
+	std::string to_string() const override
+	{
+		std::stringstream ss;
+		ss << "window_closed_event";
 		return ss.str();
 	}
 };
