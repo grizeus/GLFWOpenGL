@@ -27,7 +27,7 @@ int main(int argc, char** argv)
     GLFWwindow* window = renderer.get_window().get();
     
     event_bus bus(renderer.get_window());
-
+    input input_handler(renderer.get_window());
     std::string vert_shader = read_to_string("shaders\\vert_2d.glsl");
     std::string frag_shader = read_to_string("shaders\\frag_base.glsl");
     std::shared_ptr<GLSL_shader> shader = std::make_shared<GLSL_shader>(vert_shader.c_str(), frag_shader.c_str());
@@ -82,7 +82,7 @@ int main(int argc, char** argv)
     std::vector<GLfloat> color_data(std::begin(color_buffer_data), std::end(color_buffer_data));
     suz.set_colors(color_data);
     suz.upload_mesh();
-
+    
     float last_time = static_cast<float>(glfwGetTime());
     while (!glfwWindowShouldClose(window))
     {
@@ -91,7 +91,8 @@ int main(int argc, char** argv)
         float delta_time = cur_time - last_time;
         last_time = cur_time;
 
-        process_input(window, delta_time, camera);
+        
+        //process_input(window, delta_time, camera);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
         shader->use();

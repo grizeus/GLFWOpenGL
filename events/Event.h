@@ -41,7 +41,7 @@ public:
 	mouse_moved_event(const double x, const double y) : m_mouse_x(x), m_mouse_y(y) { }
 	static etype get_static_type() { return etype::mouse_moved; }
 	etype get_type() const override { return get_static_type(); }
-	const char* get_name() const override { return "mouse_moved_ecent"; }
+	const char* get_name() const override { return "mouse_moved_event"; }
 	std::string to_string() const override
 	{
 		std::stringstream ss;
@@ -51,6 +51,30 @@ public:
 private:
 	double m_mouse_x;
 	double m_mouse_y;
+};
+
+class mouse_scrolled_event : public event
+{
+public:
+	mouse_scrolled_event(float x, float y) : m_x_offset(x), m_y_offset(y) { }
+
+	inline float GetXOffset() const { return m_x_offset; }
+	inline float GetYOffset() const { return m_y_offset; }
+
+	static etype get_static_type() { return etype::mouse_scrolled; }
+	etype get_type() const override { return get_static_type(); }
+
+	const char* get_name() const override { return "mouse_scrolled_event"; }
+
+	std::string to_string() const override
+	{
+		std::stringstream ss;
+		ss << "mouse_scrolled_event on coordinates: " << m_x_offset << ", " << m_y_offset;
+		return ss.str();
+	}
+private:
+	float m_x_offset;
+	float m_y_offset;
 };
 
 class mouse_button_event : public event
@@ -92,8 +116,6 @@ public:
 		ss << "mouse_button_released_event: " << m_button;
 		return ss.str();
 	}
-private:
-
 };
 
 class key_pressed_event : public key_event
@@ -155,6 +177,7 @@ public:
 class window_resize_event : public event
 {
 public:
+	window_resize_event(int width, int height) : m_width(width), m_height(height) { }
 	~window_resize_event() = default;
 
 	inline int get_width() const { return m_width; }
@@ -178,7 +201,7 @@ private:
 class window_closed_event : public event
 {
 public:
-	window_closed_event() = default;
+	//window_closed_event() {};
 	~window_closed_event() = default;
 
 	static etype get_static_type() { return etype::window_close; }
