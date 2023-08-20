@@ -15,7 +15,15 @@ public:
 	void on_event(const event& e) override;
 
 	inline float get_fov() const { return m_fov; }
-	
+	inline glm::vec3 get_cam_pos() const { return m_cam_pos; }
+	inline glm::vec3 get_cam_front() const { return m_cam_front; }
+	inline glm::vec3 get_cam_up() const { return m_cam_up; }
+
+	inline void set_cam_pos(glm::vec3 cam_pos) { m_cam_pos = cam_pos; }
+	inline void set_cam_front(glm::vec3 cam_front) { m_cam_front = cam_front; }
+	inline void set_cam_up(glm::vec3 cam_up) { m_cam_up = cam_up; }
+	inline void set_delta_time(const double delta) { m_delta_time = delta; }
+
 private:
 	glm::vec3 m_cam_pos;
 	glm::vec3 m_cam_front;
@@ -23,5 +31,6 @@ private:
 	GLuint m_matrix_id;
 	glm::mat4 m_mvp;
 	float m_fov;
+	double m_delta_time;
 };
 

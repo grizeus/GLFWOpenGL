@@ -1,7 +1,7 @@
 #include "Camera.h"
 
 camera::camera(GLuint shader, const int width, const int height)
-    :m_cam_pos(0.0f, 0.0f, 3.0f), m_cam_front(0.0f, 0.0f, -1.0f), m_cam_up(0.0f, 1.0f, 0.0f)
+    :m_cam_pos(0.0f, 0.0f, 3.0f), m_cam_front(0.0f, 0.0f, -1.0f), m_cam_up(0.0f, 1.0f, 0.0f), m_delta_time(0)
 {
     m_matrix_id = glGetUniformLocation(shader, "MVP");
 
@@ -36,7 +36,15 @@ void camera::on_event(const event& e)
 {
     if (e.get_type() == etype::key_pressed)
     {
-        const key_pressed_event* inside_event = dynamic_cast<const key_pressed_event*>(&e);
+        const key_pressed_event& inside_event = dynamic_cast<const key_pressed_event&>(e);
+        float cam_speed = static_cast<float>(2.5 * m_delta_time);
+        if (inside_event.get_key_code() == key_code::W)
+            m_cam_pos += cam_speed * m_cam_front;
+        if (inside_event.get_key_code() == key_code::S)
+            m_cam_pos -= cam_speed * m_cam_front;
+        if (inside_event.get_key_code() == key_code::A)
+            m_cam_pos -= glm::normalize(glm::cross(m_cam_front, m_cam_up)) * cam_speed;
+        if (inside_event.get_key_code() == key_code::D)
+            m_cam_pos += glm::normalize(glm::cross(m_cam_front, m_cam_up)) * cam_speed;
     }
-
 }

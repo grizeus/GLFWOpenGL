@@ -87,11 +87,11 @@ void event_bus::on_window_closed()
 
 void event_bus::on_key_pressed(int key, int scancode, int action, int mods)
 {
-	std::cout << "Key pressed with code: " << scancode << std::endl;
+	std::cout << "Key pressed with code: " << key << std::endl;
 	auto subscribers = m_subscribers.find(etype::key_pressed);
 	if (subscribers != m_subscribers.end())
 	{
-		key_pressed_event e(static_cast<key_code>(scancode));
+		key_pressed_event e(static_cast<key_code>(key));
 		for (auto& sub : subscribers->second)
 			sub->on_event(e);
 	}

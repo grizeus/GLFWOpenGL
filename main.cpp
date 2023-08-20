@@ -33,12 +33,13 @@ int main(int argc, char** argv)
     std::string frag_shader = read_to_string("shaders\\frag_base.glsl");
     std::shared_ptr<GLSL_shader> shader = std::make_shared<GLSL_shader>(vert_shader.c_str(), frag_shader.c_str());
 
+    sub_ptr camera_handler = std::shared_ptr<event_subscriber>(new camera(shader->get_handle(), WINDOW_WIDTH, WINDOW_HEIGHT));
+    camera& cam = dynamic_cast<camera&>(*(camera_handler.get()));
+    bus.subscribe(camera_handler, etype::key_pressed);
     query_input_attribs(shader->get_handle());
     query_uniforms(shader->get_handle());
-    glm::vec3 cam_pos   = { 4, 3, -3 }; // Camera is at (4,3,-3), in World Space
-    glm::vec3 cam_front = { -4, -3, 3 };
-    glm::vec3 cam_up    = { 0, -1, 0 };
-    camera camera(shader->get_handle(), WINDOW_WIDTH, WINDOW_HEIGHT);
+
+    //camera camera(shader->get_handle(), WINDOW_WIDTH, WINDOW_HEIGHT);
     object suz("media\\suzanna.obj");
 
     static const GLfloat color_buffer_data[] = {
@@ -84,26 +85,26 @@ int main(int argc, char** argv)
     suz.set_colors(color_data);
     suz.upload_mesh();
     
-    float last_time = static_cast<float>(glfwGetTime());
+    double last_time = static_cast<float>(glfwGetTime());
     while (!glfwWindowShouldClose(window))
     {
         // set time ticks
-        float cur_time = static_cast<float>(glfwGetTime());
-        float delta_time = cur_time - last_time;
+        double cur_time = static_cast<double>(glfwGetTime());
+        double delta_time = cur_time - last_time;
         last_time = cur_time;
-
+        cam.set_delta_time(delta_time);
         
         //process_input(window, delta_time, camera);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
         shader->use();
-        glm::mat4 projection = glm::perspective(glm::radians(camera.get_fov()), (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.1f, 100.0f);
+        glm::mat4 projection = glm::perspective(glm::radians(cam.get_fov()), (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.1f, 100.0f);
         shader->set_mat4("projection", projection);
 
-        glm::mat4 view = glm::lookAt(cam_pos, cam_pos + cam_front, cam_up);
+        glm::mat4 view = glm::lookAt(cam.get_cam_pos(), cam.get_cam_pos() + cam.get_cam_front(), cam.get_cam_up());
         shader->set_mat4("view", view);
 
-        camera.on_render();
+        cam.on_render();
         suz.draw();
 
         glfwSwapBuffers(window);
