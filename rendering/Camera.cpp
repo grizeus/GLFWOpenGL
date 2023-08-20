@@ -34,5 +34,11 @@ void camera::on_render()
 
 void camera::on_event(const event& e)
 {
-    
+    if (e.get_type() == etype::key_pressed)
+    {
+        const key_pressed_event* inside_event = dynamic_cast<const key_pressed_event*>(&e);
+        /*if (inside_event->get_key_code() == key_code::ESCAPE)
+            glfwSetWindowShouldClose(GLFWwindow *window, int value)*/
+    }
+
 }
