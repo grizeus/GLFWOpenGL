@@ -11,6 +11,7 @@ public:
 	camera(GLuint shader, const int width, const int height);
 	~camera();
 	void on_render();
+	//void set_shader_transforms(in)
 
 	void on_event(const event& e) override;
 
@@ -29,8 +30,12 @@ private:
 	glm::vec3 m_cam_front;
 	glm::vec3 m_cam_up;
 	GLuint m_matrix_id;
+	glm::mat4 m_projection;
+	glm::mat4 m_model;
 	glm::mat4 m_mvp;
 	float m_fov;
 	double m_delta_time;
+	unsigned int m_win_width;
+	unsigned int m_win_height;
 };
 

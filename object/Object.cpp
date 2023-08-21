@@ -92,6 +92,7 @@ void object::upload_mesh()
 	glBindBuffer(GL_ARRAY_BUFFER, color_buf);
 	glBufferData(GL_ARRAY_BUFFER, m_colors.size() * sizeof(GLfloat), m_colors.data(), GL_STATIC_DRAW);
 
+	// TODO create getter for location from shader
 	glEnableVertexAttribArray(0); // verts
 	glBindBuffer(GL_ARRAY_BUFFER, vertex_buf);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
@@ -101,6 +102,8 @@ void object::upload_mesh()
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
 	glBindVertexArray(0);
+	glDeleteBuffers(1, &vertex_buf);
+	glDeleteBuffers(1, &color_buf);
 
 	m_draw_details.push_back(draw_details(vao, static_cast<GLuint>(m_vertices.size())));
 }

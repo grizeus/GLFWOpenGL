@@ -33,13 +33,11 @@ int main(int argc, char** argv)
     std::string frag_shader = read_to_string("shaders\\frag_base.glsl");
     std::shared_ptr<GLSL_shader> shader = std::make_shared<GLSL_shader>(vert_shader.c_str(), frag_shader.c_str());
 
-    sub_ptr camera_handler = std::shared_ptr<event_subscriber>(new camera(shader->get_handle(), WINDOW_WIDTH, WINDOW_HEIGHT));
-    camera& cam = dynamic_cast<camera&>(*(camera_handler.get()));
+    std::shared_ptr<camera> camera_handler(new camera(shader->get_handle(), WINDOW_WIDTH, WINDOW_HEIGHT));
     bus.subscribe(camera_handler, etype::key_pressed);
     query_input_attribs(shader->get_handle());
     query_uniforms(shader->get_handle());
 
-    //camera camera(shader->get_handle(), WINDOW_WIDTH, WINDOW_HEIGHT);
     object suz("media\\suzanna.obj");
 
     static const GLfloat color_buffer_data[] = {
@@ -92,19 +90,13 @@ int main(int argc, char** argv)
         double cur_time = static_cast<double>(glfwGetTime());
         double delta_time = cur_time - last_time;
         last_time = cur_time;
-        cam.set_delta_time(delta_time);
+        camera_handler->set_delta_time(delta_time);
         
-        //process_input(window, delta_time, camera);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
         shader->use();
-        glm::mat4 projection = glm::perspective(glm::radians(cam.get_fov()), (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.1f, 100.0f);
-        shader->set_mat4("projection", projection);
-
-        glm::mat4 view = glm::lookAt(cam.get_cam_pos(), cam.get_cam_pos() + cam.get_cam_front(), cam.get_cam_up());
-        shader->set_mat4("view", view);
-
-        cam.on_render();
+        
+        camera_handler->on_render();
         suz.draw();
 
         glfwSwapBuffers(window);
