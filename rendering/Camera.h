@@ -34,8 +34,12 @@ private:
 	glm::mat4 m_model;
 	glm::mat4 m_mvp;
 	float m_fov;
+	float m_aspect_ratio;
+	float m_last_ratio;
+	float m_last_fov;
 	double m_delta_time;
 	unsigned int m_win_width;
 	unsigned int m_win_height;
+	static constexpr float m_NEAR = 0.1f;
+	static constexpr float m_FAR = 1000.0f;
 };
-

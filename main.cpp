@@ -34,6 +34,7 @@ int main(int argc, char** argv)
     std::shared_ptr<GLSL_shader> shader = std::make_shared<GLSL_shader>(vert_shader.c_str(), frag_shader.c_str());
 
     std::shared_ptr<camera> camera_handler(new camera(shader->get_handle(), WINDOW_WIDTH, WINDOW_HEIGHT));
+    bus.subscribe(camera_handler, etype::window_resize);
     bus.subscribe(camera_handler, etype::key_pressed);
     query_input_attribs(shader->get_handle());
     query_uniforms(shader->get_handle());

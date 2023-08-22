@@ -53,7 +53,7 @@ void event_bus::on_mouse_moved(double x_pos, double y_pos)
 {
 	std::cout << "Mouse moved to " << x_pos << ":" << y_pos << std::endl;
 	auto subscribers = m_subscribers.find(etype::mouse_moved);
-	if (subscribers != m_subscribers.end())
+	if (subscribers != m_subscribers.cend())
 	{
 		mouse_moved_event e(x_pos, y_pos);
 		for (auto& sub : subscribers->second)
@@ -113,14 +113,14 @@ void event_bus::subscribe(sub_ptr sub, etype type)
 {
 	// check for extra copy of same event_subscribers
 	auto result = std::find(m_subscribers[type].cbegin(), m_subscribers[type].cend(), sub);
-	if (result == m_subscribers[type].end())
+	if (result == m_subscribers[type].cend())
 		m_subscribers[type].push_back(sub);
 }
 
 void event_bus::unsubscribe(sub_ptr sub, etype type)
 {
 	auto subscribers = m_subscribers.find(type);
-	if (subscribers != m_subscribers.end())
+	if (subscribers != m_subscribers.cend())
 	{
 		auto result = std::find(subscribers->second.cbegin(), subscribers->second.cend(), sub);
 		if (result != subscribers->second.end())
