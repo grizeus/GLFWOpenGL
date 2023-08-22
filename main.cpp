@@ -80,7 +80,7 @@ int main(int argc, char** argv)
         0.982f,  0.099f,  0.879f
     };
     
-    std::vector<GLfloat> color_data(std::begin(color_buffer_data), std::end(color_buffer_data));
+    vec_glfloat color_data(std::begin(color_buffer_data), std::end(color_buffer_data));
     suz.set_colors(color_data);
     suz.upload_mesh();
     

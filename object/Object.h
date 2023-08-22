@@ -12,6 +12,8 @@ struct draw_details
 	GLuint num_elements = 0;
 };
 
+using vec_glfloat = std::vector<GLfloat>;
+
 class object
 {
 public:
@@ -20,10 +22,10 @@ public:
 	
 	void upload_mesh();
 	void draw();
-	void set_vertices(std::vector<GLfloat>& verts);
-	void set_colors(std::vector<GLfloat>& colors);
+	void set_vertices(vec_glfloat& verts);
+	void set_colors(vec_glfloat& colors);
 private:
-	std::vector<GLfloat> m_vertices;
-	std::vector<GLfloat> m_colors;
+	vec_glfloat m_vertices;
+	vec_glfloat m_colors;
 	std::vector<draw_details> m_draw_details;
 };

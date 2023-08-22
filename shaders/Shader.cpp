@@ -2,7 +2,7 @@
 
 GLSL_shader::GLSL_shader()
 {
-	m_handle = -1;
+    m_handle = -1;
     m_location = -1;
 }
 
@@ -33,6 +33,5 @@ void GLSL_shader::delete_shader()
 
 GLint GLSL_shader::get_uniform_ID(const char* name)
 {
-    m_location = glGetUniformLocation(m_handle, name);
-    return m_location;
+    return m_location = glGetUniformLocation(m_handle, name);
 }

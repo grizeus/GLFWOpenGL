@@ -38,7 +38,7 @@ void camera::on_render()
     glm::mat4 view = glm::lookAt(
         m_cam_pos,
         m_cam_pos + m_cam_front,
-        m_cam_up  // Head is up (set to 0,-1,0 to look upside-down)
+        m_cam_up
     );
     m_mvp = m_projection * view * m_model;
     glUniformMatrix4fv(m_matrix_id, 1, GL_FALSE, &m_mvp[0][0]);
