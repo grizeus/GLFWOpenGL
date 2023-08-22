@@ -81,6 +81,9 @@ void object::upload_mesh(const GLuint& handle)
 	if (m_vertices.empty() || m_colors.empty())
 		throw ("Draw details is empty");
 	GLuint vao, vertex_buf, color_buf;
+	const GLint vertex_count = 3;
+	const GLsizei stride = 0;
+	const void* offset = 0;
 
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
@@ -97,13 +100,13 @@ void object::upload_mesh(const GLuint& handle)
 	get_vertex_location(handle, "vertex_position", vertex_position);
 	glEnableVertexAttribArray(vertex_position); // verts
 	glBindBuffer(GL_ARRAY_BUFFER, vertex_buf);
-	glVertexAttribPointer(vertex_position, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+	glVertexAttribPointer(vertex_position, vertex_count, GL_FLOAT, GL_FALSE, stride, offset);
 
 	GLint vertex_color;
 	get_vertex_location(handle, "vertex_color", vertex_color);
 	glEnableVertexAttribArray(vertex_color); // colors
 	glBindBuffer(GL_ARRAY_BUFFER, vertex_buf);
-	glVertexAttribPointer(vertex_color, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+	glVertexAttribPointer(vertex_color, vertex_count, GL_FLOAT, GL_FALSE, stride, offset);
 
 	glBindVertexArray(0);
 	glDeleteBuffers(1, &vertex_buf);
