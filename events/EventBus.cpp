@@ -65,7 +65,7 @@ void event_bus::on_window_resize(int width, int height)
 {
 	std::cout << "Window resize to" << width << ":" << height << std::endl;
 	auto subscribers = m_subscribers.find(etype::window_resize);
-	if (subscribers != m_subscribers.end())
+	if (subscribers != m_subscribers.cend())
 	{
 		window_resize_event e(width, height);
 		for (auto& sub : subscribers->second)
@@ -77,7 +77,7 @@ void event_bus::on_window_closed()
 {
 	std::cout << "Window was closed" << std::endl;
 	auto subscribers = m_subscribers.find(etype::window_close);
-	if (subscribers != m_subscribers.end())
+	if (subscribers != m_subscribers.cend())
 	{
 		window_closed_event e;
 		for (auto& sub : subscribers->second)
@@ -89,7 +89,7 @@ void event_bus::on_key_pressed(int key, int scancode, int action, int mods)
 {
 	std::cout << "Key pressed with code: " << key << std::endl;
 	auto subscribers = m_subscribers.find(etype::key_pressed);
-	if (subscribers != m_subscribers.end())
+	if (subscribers != m_subscribers.cend())
 	{
 		key_pressed_event e(static_cast<key_code>(key));
 		for (auto& sub : subscribers->second)
@@ -101,7 +101,7 @@ void event_bus::on_mouse_button_pressed(int button, int action, int mods)
 {
 	std::cout << "Mouse button pressed with code: " << button << std::endl;
 	auto subscribers = m_subscribers.find(etype::window_resize);
-	if (subscribers != m_subscribers.end())
+	if (subscribers != m_subscribers.cend())
 	{
 		mouse_button_pressed_event e(static_cast<key_code>(button));
 		for (auto& sub : subscribers->second)
@@ -112,7 +112,7 @@ void event_bus::on_mouse_button_pressed(int button, int action, int mods)
 void event_bus::subscribe(sub_ptr sub, etype type)
 {
 	// check for extra copy of same event_subscribers
-	auto result = std::find(m_subscribers[type].begin(), m_subscribers[type].end(), sub);
+	auto result = std::find(m_subscribers[type].cbegin(), m_subscribers[type].cend(), sub);
 	if (result == m_subscribers[type].end())
 		m_subscribers[type].push_back(sub);
 }
@@ -122,7 +122,7 @@ void event_bus::unsubscribe(sub_ptr sub, etype type)
 	auto subscribers = m_subscribers.find(type);
 	if (subscribers != m_subscribers.end())
 	{
-		auto result = std::find(subscribers->second.begin(), subscribers->second.end(), sub);
+		auto result = std::find(subscribers->second.cbegin(), subscribers->second.cend(), sub);
 		if (result != subscribers->second.end())
 			subscribers->second.erase(result);
 	}
