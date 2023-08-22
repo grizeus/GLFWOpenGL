@@ -73,6 +73,25 @@ inline void query_input_attribs(const GLuint& handle)
     }
 }
 
+inline void get_vertex_location(const GLuint& handle, const char* loc_name, GLint& location)
+{
+    GLint num_attribs;
+    glGetProgramInterfaceiv(handle, GL_PROGRAM_INPUT, GL_ACTIVE_RESOURCES, &num_attribs);
+
+    GLenum properties[] = { GL_NAME_LENGTH, GL_TYPE, GL_LOCATION };
+    for (int i = 0; i < num_attribs; ++i)
+    {
+        GLint result[3];
+        glGetProgramResourceiv(handle, GL_PROGRAM_INPUT, i, 3, properties, 3, NULL, result);
+
+        GLint name_buf_size = result[0] + 1;
+        char* name = new char[name_buf_size];
+        glGetProgramResourceName(handle, GL_PROGRAM_INPUT, i, name_buf_size, NULL, name);
+        if (std::strcmp(name, loc_name) == 0)
+            location = result[2];
+    }
+}
+
 inline void query_uniforms(const GLuint& handle)
 {
     printf("-----UNIFORMS(shaderprog:%i)-----\n", handle);

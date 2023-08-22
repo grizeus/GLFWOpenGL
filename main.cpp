@@ -82,7 +82,7 @@ int main(int argc, char** argv)
     
     vec_glfloat color_data(std::begin(color_buffer_data), std::end(color_buffer_data));
     suz.set_colors(color_data);
-    suz.upload_mesh();
+    suz.upload_mesh(shader->get_handle());
     
     double last_time = static_cast<float>(glfwGetTime());
     while (!glfwWindowShouldClose(window))

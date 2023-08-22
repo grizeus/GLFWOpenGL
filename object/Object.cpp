@@ -1,5 +1,6 @@
 #include "Object.h"
 #include "../utilities/Utilities.h"
+#include "../utilities/Query.h"
 
 namespace
 {
@@ -75,7 +76,7 @@ object::~object()
 	m_vertices.clear();
 }
 
-void object::upload_mesh()
+void object::upload_mesh(const GLuint& handle)
 {
 	if (m_vertices.empty() || m_colors.empty())
 		throw ("Draw details is empty");
@@ -92,14 +93,17 @@ void object::upload_mesh()
 	glBindBuffer(GL_ARRAY_BUFFER, color_buf);
 	glBufferData(GL_ARRAY_BUFFER, m_colors.size() * sizeof(GLfloat), m_colors.data(), GL_STATIC_DRAW);
 
-	// TODO create getter for location from shader
-	glEnableVertexAttribArray(0); // verts
+	GLint vertex_position;
+	get_vertex_location(handle, "vertex_position", vertex_position);
+	glEnableVertexAttribArray(vertex_position); // verts
 	glBindBuffer(GL_ARRAY_BUFFER, vertex_buf);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+	glVertexAttribPointer(vertex_position, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
-	glEnableVertexAttribArray(1); // colors
+	GLint vertex_color;
+	get_vertex_location(handle, "vertex_color", vertex_color);
+	glEnableVertexAttribArray(vertex_color); // colors
 	glBindBuffer(GL_ARRAY_BUFFER, vertex_buf);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+	glVertexAttribPointer(vertex_color, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
 	glBindVertexArray(0);
 	glDeleteBuffers(1, &vertex_buf);
@@ -118,14 +122,14 @@ void object::draw()
 	}
 }
 
-void object::set_vertices(std::vector<GLfloat>& verts)
+void object::set_vertices(vec_glfloat& verts)
 {
 	if (!m_vertices.empty())
 		m_vertices.clear();
 	m_vertices = verts;
 }
 
-void object::set_colors(std::vector<GLfloat>& colors)
+void object::set_colors(vec_glfloat& colors)
 {
 	if (!m_colors.empty())
 		m_colors.clear();

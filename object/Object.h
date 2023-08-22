@@ -20,7 +20,7 @@ public:
 	object(const char* path);
 	~object();
 	
-	void upload_mesh();
+	void upload_mesh(const GLuint& handle);
 	void draw();
 	void set_vertices(vec_glfloat& verts);
 	void set_colors(vec_glfloat& colors);
