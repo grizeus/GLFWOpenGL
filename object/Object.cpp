@@ -1,6 +1,8 @@
 #include "Object.h"
 #include "../utilities/Utilities.h"
 #include "../utilities/Query.h"
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
 
 namespace
 {
@@ -290,6 +292,7 @@ object::~object()
 	m_vertices.clear();
 	m_uv.clear();
 	m_normales.clear();
+	glDeleteTextures(1, &m_texture);
 }
 
 void object::upload_mesh(const GLuint& handle)
@@ -377,6 +380,29 @@ void object::upload_textured_mesh(const GLuint& handle)
 	glDeleteBuffers(1, &uv_buf);
 
 	m_draw_details.push_back(draw_details(vao, static_cast<GLuint>(m_vertices.size())));
+}
+
+void object::upload_texture(const GLuint width, const GLuint height, const GLubyte* tex_data, bool hasAlpha)
+{
+
+	glGenTextures(1, &m_texture);
+	glBindTexture(GL_TEXTURE_2D, m_texture);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+	//try: https://stackoverflow.com/questions/23150123/loading-png-with-stb-image-for-opengl-texture-gives-wrong-colors
+	//glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	if (hasAlpha)
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, tex_data);
+	else
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, tex_data);
+
+	glGenerateMipmap(GL_TEXTURE_2D);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void object::draw()

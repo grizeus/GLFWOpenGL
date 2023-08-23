@@ -25,6 +25,7 @@ public:
 	void load_BMP(const char* imagepath);
 	void upload_mesh(const GLuint& handle);
 	void upload_textured_mesh(const GLuint& handle);
+	void upload_texture(const GLuint width, const GLuint height, const GLubyte* tex_data, bool hasAlpha);
 	void draw();
 	void set_vertices(vec_glfloat& verts);
 	void set_colors(vec_glfloat& colors);
