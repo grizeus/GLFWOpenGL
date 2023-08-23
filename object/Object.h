@@ -22,7 +22,7 @@ public:
 	void load_textured_obj(const char* path);
 	~object();
 	
-	GLuint load_BMP(const char* imagepath);
+	void load_BMP(const char* imagepath);
 	void upload_mesh(const GLuint& handle);
 	void upload_textured_mesh(const GLuint& handle);
 	void draw();

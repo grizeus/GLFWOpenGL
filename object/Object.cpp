@@ -195,14 +195,14 @@ void object::load_textured_obj(const char* path)
 	}
 }
 
-GLuint object::load_BMP(const char* imagepath) {
+void object::load_BMP(const char* imagepath) {
 
 	printf("Reading image %s\n", imagepath);
 
 	// Data read from the header of the BMP file
 	unsigned char header[54];
-	unsigned int dataPos;
-	unsigned int imageSize;
+	unsigned int data_pos;
+	unsigned int image_size;
 	unsigned int width, height;
 	// Actual RGB data
 	unsigned char* data;
@@ -210,54 +210,52 @@ GLuint object::load_BMP(const char* imagepath) {
 	// Open the file
 	FILE* file;
 	fopen_s(&file, imagepath, "rb");
-	if (!file) {
+	if (!file)
 		throw std::runtime_error("File could not be opened. Are you in the right directory ? Don't forget to read the FAQ !\n");
-		return 0;
-	}
 
 	// Read the header, i.e. the 54 first bytes
 
 	// If less than 54 bytes are read, problem
-	if (fread(header, 1, 54, file) != 54) {
-		printf("Not a correct BMP file\n");
+	if (fread(header, 1, 54, file) != 54) 
+	{
 		fclose(file);
-		return 0;
+		throw std::runtime_error("Not a correct BMP file\n");
 	}
 	// A BMP files always begins with "BM"
-	if (header[0] != 'B' || header[1] != 'M') {
-		printf("Not a correct BMP file\n");
+	if (header[0] != 'B' || header[1] != 'M')
+	{
 		fclose(file);
-		return 0;
+		throw std::runtime_error("Not a correct BMP file\n");
 	}
 	// Make sure this is a 24bpp file
-	if (*(int*)&(header[0x1E]) != 0) { printf("Not a correct BMP file\n");    fclose(file); return 0; }
-	if (*(int*)&(header[0x1C]) != 24) { printf("Not a correct BMP file\n");    fclose(file); return 0; }
+	if (*(int*)&(header[0x1E]) != 0) { fclose(file); throw std::runtime_error("Not a correct BMP file\n"); }
+	if (*(int*)&(header[0x1C]) != 24) { fclose(file); throw std::runtime_error("Not a correct BMP file\n"); }
 
 	// Read the information about the image
-	dataPos = *(int*)&(header[0x0A]);
-	imageSize = *(int*)&(header[0x22]);
+	data_pos = *(int*)&(header[0x0A]);
+	image_size = *(int*)&(header[0x22]);
 	width = *(int*)&(header[0x12]);
 	height = *(int*)&(header[0x16]);
 
 	// Some BMP files are misformatted, guess missing information
-	if (imageSize == 0)    imageSize = width * height * 3; // 3 : one byte for each Red, Green and Blue component
-	if (dataPos == 0)      dataPos = 54; // The BMP header is done that way
+	if (image_size == 0)    image_size = width * height * 3; // 3 : one byte for each Red, Green and Blue component
+	if (data_pos == 0)      data_pos = 54; // The BMP header is done that way
 
 	// Create a buffer
-	data = new unsigned char[imageSize];
+	data = new unsigned char[image_size];
 
 	// Read the actual data from the file into the buffer
-	fread(data, 1, imageSize, file);
+	fread_s(data, image_size, 1, image_size, file);
 
 	// Everything is in memory now, the file can be closed.
 	fclose(file);
 
 	// Create one OpenGL texture
-	GLuint textureID;
-	glGenTextures(1, &textureID);
+	GLuint texture;
+	glGenTextures(1, &texture);
 
 	// "Bind" the newly created texture : all future texture functions will modify this texture
-	glBindTexture(GL_TEXTURE_2D, textureID);
+	glBindTexture(GL_TEXTURE_2D, texture);
 
 	// Give the image to OpenGL
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_BGR, GL_UNSIGNED_BYTE, data);
@@ -278,7 +276,7 @@ GLuint object::load_BMP(const char* imagepath) {
 	glGenerateMipmap(GL_TEXTURE_2D);
 
 	// Return the ID of the texture we just created
-	return textureID;
+	m_texture = texture;
 }
 
 object::~object()
