@@ -39,8 +39,8 @@ int main(int argc, char** argv)
     query_input_attribs(shader->get_handle());
     query_uniforms(shader->get_handle());
 
-    object suz("media\\suzanna.obj");
-
+    object suz("media\\untitled.obj");
+    suz.set_texture(suz.load_BMP("media//numbers.bmp"));
     static const GLfloat color_buffer_data[] = {
         0.583f,  0.771f,  0.014f,
         0.609f,  0.115f,  0.436f,
@@ -82,7 +82,8 @@ int main(int argc, char** argv)
     
     vec_glfloat color_data(std::begin(color_buffer_data), std::end(color_buffer_data));
     suz.set_colors(color_data);
-    suz.upload_mesh(shader->get_handle());
+    //suz.upload_mesh(shader->get_handle());
+    suz.upload_textured_mesh(shader->get_handle());
     
     double last_time = static_cast<float>(glfwGetTime());
     while (!glfwWindowShouldClose(window))

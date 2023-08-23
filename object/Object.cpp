@@ -17,24 +17,56 @@ namespace
 	private:
 		GLfloat m_x, m_y, m_z;
 	};
+
+	struct vec2
+	{
+		vec2(GLfloat x, GLfloat y)
+			:m_x(x), m_y(y)
+		{}
+		~vec2()
+		{}
+		inline GLfloat return_x() { return m_x; }
+		inline GLfloat return_y() { return m_y; }
+	private:
+		GLfloat m_x, m_y;
+	};
 }
 
 object::object(const char* path)
+	:m_texture(0)
 {
 	std::vector<vec3> raw_v;
+	std::vector<vec3> raw_vn;
+	std::vector<vec2> raw_vt;
 	std::vector<int> indices;
 	std::vector<std::string> parts;
 	std::stringstream ss(read_to_string(path));
 	std::string line;
 	while (std::getline(ss, line))
 	{
-		if (line.substr(0,2) == "v ")
+		if (line.substr(0, 2) == "v ")
 		{
 			std::istringstream iss(line);
 			char c;
 			GLfloat x, y, z;
 			iss >> c >> x >> y >> z;
 			raw_v.push_back(vec3(x, y, z));
+		}
+		else if (line.substr(0, 2) == "vn")
+		{
+			std::istringstream iss(line);
+			char c;
+			GLfloat x, y, z;
+			iss >> c >> x >> y >> z;
+			raw_vn.push_back(vec3(x, y, z));
+		}
+		else if (line.substr(0, 2) == "vt")
+		{
+			std::istringstream iss(line);
+			char c;
+			GLfloat x, y;
+			iss >> c >> x >> y;
+			raw_vt.push_back(vec2(x, y));
 		}
 		else if (line[0] == 'f')
 		{
@@ -56,13 +88,190 @@ object::object(const char* path)
 		std::getline(iss, i2, '/');
 		std::getline(iss, i3, '/');
 		indices.push_back(std::stoi(i1));
+		indices.push_back(std::stoi(i2));
+		indices.push_back(std::stoi(i3));
 	}
-	for (auto& i : indices)
+	for (int i = 0; i < indices.size(); i += 3)
 	{
-		m_vertices.push_back(raw_v[i - 1].return_x());
-		m_vertices.push_back(raw_v[i - 1].return_y());
-		m_vertices.push_back(raw_v[i - 1].return_z());
+		m_vertices.push_back(raw_v[indices[i] - 1].return_x());
+		m_vertices.push_back(raw_v[indices[i] - 1].return_y());
+		m_vertices.push_back(raw_v[indices[i] - 1].return_z());
 	}
+	for (int i = 1; i < indices.size(); i += 3)
+	{
+		m_uv.push_back(raw_vt[indices[i] - 1].return_x());
+		m_uv.push_back(raw_vt[indices[i] - 1].return_y());
+	}
+	for (int i = 2; i < indices.size(); i += 3)
+	{
+		m_normales.push_back(raw_vn[indices[i] - 1].return_x());
+		m_normales.push_back(raw_vn[indices[i] - 1].return_y());
+		m_normales.push_back(raw_vn[indices[i] - 1].return_z());
+	}
+}
+
+void object::load_textured_obj(const char* path)
+{
+	std::vector<vec3> raw_v;
+	std::vector<vec3> raw_vn;
+	std::vector<vec2> raw_vt;
+	std::vector<int> indices;
+	std::vector<std::string> parts;
+	std::stringstream ss(read_to_string(path));
+	std::string line;
+	while (std::getline(ss, line))
+	{
+		if (line.substr(0, 2) == "v ")
+		{
+			std::istringstream iss(line);
+			char c;
+			GLfloat x, y, z;
+			iss >> c >> x >> y >> z;
+			raw_v.push_back(vec3(x, y, z));
+		}
+		else if (line.substr(0, 2) == "vn")
+		{
+			std::istringstream iss(line);
+			char c;
+			GLfloat x, y, z;
+			iss >> c >> x >> y >> z;
+			raw_vn.push_back(vec3(x, y, z));
+		}
+		else if (line.substr(0, 2) == "vt")
+		{
+			std::istringstream iss(line);
+			char c;
+			GLfloat x, y;
+			iss >> c >> x >> y;
+			raw_vt.push_back(vec2(x, y));
+		}
+		else if (line[0] == 'f')
+		{
+			std::istringstream iss(line);
+			std::string part1, part2, part3, part4;
+			char c;
+			iss >> c >> part1 >> part2 >> part3;
+			parts.push_back(part1);
+			parts.push_back(part2);
+			parts.push_back(part3);
+		}
+	}
+	// separate 1 index in triplet for vertex coord
+	for (auto& p : parts)
+	{
+		std::istringstream iss(p);
+		std::string i1, i2, i3;
+		std::getline(iss, i1, '/');
+		std::getline(iss, i2, '/');
+		std::getline(iss, i3, '/');
+		indices.push_back(std::stoi(i1));
+		indices.push_back(std::stoi(i2));
+		indices.push_back(std::stoi(i3));
+	}
+	for (int i = 0; i < indices.size(); i += 3)
+	{
+		m_vertices.push_back(raw_v[indices[i] - 1].return_x());
+		m_vertices.push_back(raw_v[indices[i] - 1].return_y());
+		m_vertices.push_back(raw_v[indices[i] - 1].return_z());
+	}
+	for (int i = 1; i < indices.size(); i += 3)
+	{
+		m_uv.push_back(raw_vt[indices[i] - 1].return_x());
+		m_uv.push_back(raw_vt[indices[i] - 1].return_y());
+	}
+	for (int i = 2; i < indices.size(); i += 3)
+	{
+		m_normales.push_back(raw_vn[indices[i] - 1].return_x());
+		m_normales.push_back(raw_vn[indices[i] - 1].return_y());
+		m_normales.push_back(raw_vn[indices[i] - 1].return_z());
+	}
+}
+
+GLuint object::load_BMP(const char* imagepath) {
+
+	printf("Reading image %s\n", imagepath);
+
+	// Data read from the header of the BMP file
+	unsigned char header[54];
+	unsigned int dataPos;
+	unsigned int imageSize;
+	unsigned int width, height;
+	// Actual RGB data
+	unsigned char* data;
+
+	// Open the file
+	FILE* file;
+	fopen_s(&file, imagepath, "r");
+	if (!file) {
+		printf("%s could not be opened. Are you in the right directory ? Don't forget to read the FAQ !\n", imagepath);
+		getchar();
+		return 0;
+	}
+
+	// Read the header, i.e. the 54 first bytes
+
+	// If less than 54 bytes are read, problem
+	if (fread(header, 1, 54, file) != 54) {
+		printf("Not a correct BMP file\n");
+		fclose(file);
+		return 0;
+	}
+	// A BMP files always begins with "BM"
+	if (header[0] != 'B' || header[1] != 'M') {
+		printf("Not a correct BMP file\n");
+		fclose(file);
+		return 0;
+	}
+	// Make sure this is a 24bpp file
+	if (*(int*)&(header[0x1E]) != 0) { printf("Not a correct BMP file\n");    fclose(file); return 0; }
+	if (*(int*)&(header[0x1C]) != 24) { printf("Not a correct BMP file\n");    fclose(file); return 0; }
+
+	// Read the information about the image
+	dataPos = *(int*)&(header[0x0A]);
+	imageSize = *(int*)&(header[0x22]);
+	width = *(int*)&(header[0x12]);
+	height = *(int*)&(header[0x16]);
+
+	// Some BMP files are misformatted, guess missing information
+	if (imageSize == 0)    imageSize = width * height * 3; // 3 : one byte for each Red, Green and Blue component
+	if (dataPos == 0)      dataPos = 54; // The BMP header is done that way
+
+	// Create a buffer
+	data = new unsigned char[imageSize];
+
+	// Read the actual data from the file into the buffer
+	fread(data, 1, imageSize, file);
+
+	// Everything is in memory now, the file can be closed.
+	fclose(file);
+
+	// Create one OpenGL texture
+	GLuint textureID;
+	glGenTextures(1, &textureID);
+
+	// "Bind" the newly created texture : all future texture functions will modify this texture
+	glBindTexture(GL_TEXTURE_2D, textureID);
+
+	// Give the image to OpenGL
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_BGR, GL_UNSIGNED_BYTE, data);
+
+	// OpenGL has now copied the data. Free our own version
+	delete[] data;
+
+	// Poor filtering, or ...
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); 
+
+	// ... nice trilinear filtering ...
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	// ... which requires mipmaps. Generate them automatically.
+	glGenerateMipmap(GL_TEXTURE_2D);
+
+	// Return the ID of the texture we just created
+	return textureID;
 }
 
 object::~object()
@@ -74,6 +283,8 @@ object::~object()
 	m_draw_details.clear();
 	m_colors.clear();
 	m_vertices.clear();
+	m_uv.clear();
+	m_normales.clear();
 }
 
 void object::upload_mesh(const GLuint& handle)
@@ -97,13 +308,13 @@ void object::upload_mesh(const GLuint& handle)
 	glBufferData(GL_ARRAY_BUFFER, m_colors.size() * sizeof(GLfloat), m_colors.data(), GL_STATIC_DRAW);
 
 	GLint vertex_position;
-	get_vertex_location(handle, "vertex_position", vertex_position);
+	query_resource_location(handle, "vertex_position", vertex_position);
 	glEnableVertexAttribArray(vertex_position); // verts
 	glBindBuffer(GL_ARRAY_BUFFER, vertex_buf);
 	glVertexAttribPointer(vertex_position, vertex_count, GL_FLOAT, GL_FALSE, stride, offset);
 
 	GLint vertex_color;
-	get_vertex_location(handle, "vertex_color", vertex_color);
+	query_resource_location(handle, "vertex_color", vertex_color);
 	glEnableVertexAttribArray(vertex_color); // colors
 	glBindBuffer(GL_ARRAY_BUFFER, vertex_buf);
 	glVertexAttribPointer(vertex_color, vertex_count, GL_FLOAT, GL_FALSE, stride, offset);
@@ -111,6 +322,52 @@ void object::upload_mesh(const GLuint& handle)
 	glBindVertexArray(0);
 	glDeleteBuffers(1, &vertex_buf);
 	glDeleteBuffers(1, &color_buf);
+
+	m_draw_details.push_back(draw_details(vao, static_cast<GLuint>(m_vertices.size())));
+}
+
+void object::upload_textured_mesh(const GLuint& handle)
+{
+	if (m_vertices.empty() || m_uv.empty())
+		throw ("Draw details is empty");
+	GLuint vao, vertex_buf, uv_buf;
+	const GLint vertex_count = 3;
+	const GLint uv_count = 2;
+	const GLsizei stride = 0;
+	const void* offset = 0;
+
+	glGenVertexArrays(1, &vao);
+	glBindVertexArray(vao);
+
+	glGenBuffers(1, &vertex_buf);
+	glBindBuffer(GL_ARRAY_BUFFER, vertex_buf);
+	glBufferData(GL_ARRAY_BUFFER, m_vertices.size() * sizeof(GLfloat), m_vertices.data(), GL_STATIC_DRAW);
+
+	glGenBuffers(1, &uv_buf);
+	glBindBuffer(GL_ARRAY_BUFFER, uv_buf);
+	glBufferData(GL_ARRAY_BUFFER, m_uv.size() * sizeof(GLfloat), m_uv.data(), GL_STATIC_DRAW);
+
+	// set-up texture
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, m_texture);
+	GLuint texture_ID = glGetUniformLocation(handle, "texture_sampler");
+	glUniform1i(texture_ID, 0);
+
+	GLint vertex_position;
+	query_resource_location(handle, "vertex_position", vertex_position);
+	glEnableVertexAttribArray(vertex_position); // verts
+	glBindBuffer(GL_ARRAY_BUFFER, vertex_buf);
+	glVertexAttribPointer(vertex_position, vertex_count, GL_FLOAT, GL_FALSE, stride, offset);
+
+	GLint vertex_uv;
+	query_resource_location(handle, "vertex_uv", vertex_uv);
+	glEnableVertexAttribArray(vertex_uv); // colors
+	glBindBuffer(GL_ARRAY_BUFFER, uv_buf);
+	glVertexAttribPointer(vertex_uv, uv_count, GL_FLOAT, GL_FALSE, stride, offset);
+
+	glBindVertexArray(0);
+	glDeleteBuffers(1, &vertex_buf);
+	glDeleteBuffers(1, &uv_buf);
 
 	m_draw_details.push_back(draw_details(vao, static_cast<GLuint>(m_vertices.size())));
 }

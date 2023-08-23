@@ -73,7 +73,7 @@ inline void query_input_attribs(const GLuint& handle)
     }
 }
 
-inline void get_vertex_location(const GLuint& handle, const char* loc_name, GLint& location)
+inline void query_resource_location(const GLuint& handle, const char* loc_name, GLint& location)
 {
     GLint num_attribs;
     glGetProgramInterfaceiv(handle, GL_PROGRAM_INPUT, GL_ACTIVE_RESOURCES, &num_attribs);
@@ -89,6 +89,7 @@ inline void get_vertex_location(const GLuint& handle, const char* loc_name, GLin
         glGetProgramResourceName(handle, GL_PROGRAM_INPUT, i, name_buf_size, NULL, name);
         if (std::strcmp(name, loc_name) == 0)
             location = result[2];
+        delete[] name;
     }
 }
 

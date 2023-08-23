@@ -3,7 +3,7 @@
 camera::camera(GLuint shader, const int width, const int height)
     : m_cam_pos(0.0f, 0.0f, 3.0f)
     , m_cam_front(0.0f, 0.0f, -1.0f)
-    , m_cam_up(0.0f, 1.0f, 0.0f)
+    , m_cam_up(0.0f, -1.0f, 0.0f)
     , m_last_ratio(0.0f)
     , m_last_fov(0.0f)
     , m_delta_time(0)
@@ -67,6 +67,12 @@ void camera::on_event(const event& e)
                 break;
             case key_code::D:
                 m_cam_pos += glm::normalize(glm::cross(m_cam_front, m_cam_up)) * cam_speed;
+                break;
+            case key_code::D1:
+                m_cam_up = { 0.0f, 1.0f, 0.0f };
+                break;
+            case key_code::D2:
+                m_cam_up = { 0.0f, -1.0f, 0.0f };
                 break;
             default:
                 break;
