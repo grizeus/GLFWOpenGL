@@ -150,8 +150,12 @@
     <ClInclude Include="utilities\Version.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="shaders\frag_colored.glsl" />
+    <None Include="shaders\frag_textured.glsl" />
     <None Include="shaders\vert_2d.glsl" />
     <None Include="shaders\frag_base.glsl" />
+    <None Include="shaders\vert_2dflat.glsl" />
+    <None Include="shaders\vert_projected.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

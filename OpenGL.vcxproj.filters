@@ -85,5 +85,17 @@
     <None Include="shaders\vert_2d.glsl">
       <Filter>GLSL</Filter>
     </None>
+    <None Include="shaders\frag_textured.glsl">
+      <Filter>GLSL</Filter>
+    </None>
+    <None Include="shaders\frag_colored.glsl">
+      <Filter>GLSL</Filter>
+    </None>
+    <None Include="shaders\vert_projected.glsl">
+      <Filter>GLSL</Filter>
+    </None>
+    <None Include="shaders\vert_2dflat.glsl">
+      <Filter>GLSL</Filter>
+    </None>
   </ItemGroup>
 </Project>
