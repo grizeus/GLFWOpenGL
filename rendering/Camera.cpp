@@ -1,9 +1,9 @@
 #include "Camera.h"
 
 camera::camera(GLuint shader, const int width, const int height)
-    : m_cam_pos(0.0f, 0.0f, 3.0f)
-    , m_cam_front(0.0f, 0.0f, -1.0f)
-    , m_cam_up(0.0f, -1.0f, 0.0f)
+    : m_cam_pos(4.0f, 3.0f, -3.0f)
+    , m_cam_front(-4.0f, -3.0f, 3.0f)
+    , m_cam_up(0.0f, 1.0f, 0.0f)
     , m_last_ratio(0.0f)
     , m_last_fov(0.0f)
     , m_delta_time(0)

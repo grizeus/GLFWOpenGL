@@ -41,5 +41,5 @@ private:
 	unsigned int m_win_width;
 	unsigned int m_win_height;
 	static constexpr float m_NEAR = 0.1f;
-	static constexpr float m_FAR = 1000.0f;
+	static constexpr float m_FAR = 100.0f;
 };

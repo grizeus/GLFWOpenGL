@@ -366,6 +366,8 @@ void object::upload_textured_mesh(const GLuint& handle)
 	glVertexAttribPointer(vertex_uv, uv_count, GL_FLOAT, GL_FALSE, stride, offset);
 
 	glBindVertexArray(0);
+	glDisableVertexAttribArray(vertex_position);
+	glDisableVertexAttribArray(vertex_uv);
 	glDeleteBuffers(1, &vertex_buf);
 	glDeleteBuffers(1, &uv_buf);
 
