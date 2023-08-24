@@ -1,8 +1,6 @@
 #include "Object.h"
 #include "../utilities/Utilities.h"
 #include "../utilities/Query.h"
-#define STB_IMAGE_IMPLEMENTATION
-#include <stb_image.h>
 
 namespace
 {
@@ -57,17 +55,17 @@ object::object(const char* path)
 		else if (line.substr(0, 2) == "vn")
 		{
 			std::istringstream iss(line);
-			char c;
+			std::string s;
 			GLfloat x, y, z;
-			iss >> c >> x >> y >> z;
+			iss >> s >> x >> y >> z;
 			raw_vn.push_back(vec3(x, y, z));
 		}
 		else if (line.substr(0, 2) == "vt")
 		{
 			std::istringstream iss(line);
-			char c;
+			std::string s;
 			GLfloat x, y;
-			iss >> c >> x >> y;
+			iss >> s >> x >> y;
 			raw_vt.push_back(vec2(x, y));
 		}
 		else if (line[0] == 'f')
@@ -142,17 +140,17 @@ void object::load_textured_obj(const char* path)
 		else if (line.substr(0, 2) == "vn")
 		{
 			std::istringstream iss(line);
-			char c;
+			std::string s;
 			GLfloat x, y, z;
-			iss >> c >> x >> y >> z;
+			iss >> s >> x >> y >> z;
 			raw_vn.push_back(vec3(x, y, z));
 		}
 		else if (line.substr(0, 2) == "vt")
 		{
 			std::istringstream iss(line);
-			char c;
+			std::string s;
 			GLfloat x, y;
-			iss >> c >> x >> y;
+			iss >> s >> x >> y;
 			raw_vt.push_back(vec2(x, y));
 		}
 		else if (line[0] == 'f')
@@ -195,90 +193,6 @@ void object::load_textured_obj(const char* path)
 		m_normales.push_back(raw_vn[indices[i] - 1].return_y());
 		m_normales.push_back(raw_vn[indices[i] - 1].return_z());
 	}
-}
-
-void object::load_BMP(const char* imagepath) {
-
-	printf("Reading image %s\n", imagepath);
-
-	// Data read from the header of the BMP file
-	unsigned char header[54];
-	unsigned int data_pos;
-	unsigned int image_size;
-	unsigned int width, height;
-	// Actual RGB data
-	unsigned char* data;
-
-	// Open the file
-	FILE* file;
-	fopen_s(&file, imagepath, "rb");
-	if (!file)
-		throw std::runtime_error("File could not be opened. Are you in the right directory ? Don't forget to read the FAQ !\n");
-
-	// Read the header, i.e. the 54 first bytes
-
-	// If less than 54 bytes are read, problem
-	if (fread(header, 1, 54, file) != 54) 
-	{
-		fclose(file);
-		throw std::runtime_error("Not a correct BMP file\n");
-	}
-	// A BMP files always begins with "BM"
-	if (header[0] != 'B' || header[1] != 'M')
-	{
-		fclose(file);
-		throw std::runtime_error("Not a correct BMP file\n");
-	}
-	// Make sure this is a 24bpp file
-	if (*(int*)&(header[0x1E]) != 0) { fclose(file); throw std::runtime_error("Not a correct BMP file\n"); }
-	if (*(int*)&(header[0x1C]) != 24) { fclose(file); throw std::runtime_error("Not a correct BMP file\n"); }
-
-	// Read the information about the image
-	data_pos = *(int*)&(header[0x0A]);
-	image_size = *(int*)&(header[0x22]);
-	width = *(int*)&(header[0x12]);
-	height = *(int*)&(header[0x16]);
-
-	// Some BMP files are misformatted, guess missing information
-	if (image_size == 0)    image_size = width * height * 3; // 3 : one byte for each Red, Green and Blue component
-	if (data_pos == 0)      data_pos = 54; // The BMP header is done that way
-
-	// Create a buffer
-	data = new unsigned char[image_size];
-
-	// Read the actual data from the file into the buffer
-	fread_s(data, image_size, 1, image_size, file);
-
-	// Everything is in memory now, the file can be closed.
-	fclose(file);
-
-	// Create one OpenGL texture
-	GLuint texture;
-	glGenTextures(1, &texture);
-
-	// "Bind" the newly created texture : all future texture functions will modify this texture
-	glBindTexture(GL_TEXTURE_2D, texture);
-
-	// Give the image to OpenGL
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_BGR, GL_UNSIGNED_BYTE, data);
-
-	// OpenGL has now copied the data. Free our own version
-	delete[] data;
-
-	// Poor filtering, or ...
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); 
-
-	// ... nice trilinear filtering ...
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	// ... which requires mipmaps. Generate them automatically.
-	glGenerateMipmap(GL_TEXTURE_2D);
-
-	// Return the ID of the texture we just created
-	m_texture = texture;
 }
 
 object::~object()
@@ -380,29 +294,6 @@ void object::upload_textured_mesh(const GLuint& handle)
 	glDeleteBuffers(1, &uv_buf);
 
 	m_draw_details.push_back(draw_details(vao, static_cast<GLuint>(m_vertices.size())));
-}
-
-void object::upload_texture(const GLuint width, const GLuint height, const GLubyte* tex_data, bool hasAlpha)
-{
-
-	glGenTextures(1, &m_texture);
-	glBindTexture(GL_TEXTURE_2D, m_texture);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-	//try: https://stackoverflow.com/questions/23150123/loading-png-with-stb-image-for-opengl-texture-gives-wrong-colors
-	//glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-	if (hasAlpha)
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, tex_data);
-	else
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, tex_data);
-
-	glGenerateMipmap(GL_TEXTURE_2D);
-
-	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void object::draw()
