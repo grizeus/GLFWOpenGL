@@ -91,10 +91,7 @@
     <None Include="shaders\frag_colored.glsl">
       <Filter>GLSL</Filter>
     </None>
-    <None Include="shaders\vert_projected.glsl">
-      <Filter>GLSL</Filter>
-    </None>
-    <None Include="shaders\vert_2dflat.glsl">
+    <None Include="shaders\vert_transform.glsl">
       <Filter>GLSL</Filter>
     </None>
   </ItemGroup>

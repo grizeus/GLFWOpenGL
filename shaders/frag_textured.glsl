@@ -1,10 +1,10 @@
 #version 430
-out vec4 fragColor;
 
-in vec2 pass_texuv;
+in vec2 uv;
+out vec3 color;
 
-uniform sampler2D uTexture; 
+uniform sampler2D texture_sampler; 
 
 void main() {
-    fragColor = texture(uTexture, pass_texuv);
+    color = texture(texture_sampler, uv).rgb;
 }

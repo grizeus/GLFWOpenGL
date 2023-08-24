@@ -28,9 +28,9 @@ int main(int argc, char** argv)
     bus.subscribe(input_handler, etype::key_pressed);
     std::string vert_shader = read_to_string("shaders\\vert_2d.glsl");
     std::string frag_shader = read_to_string("shaders\\frag_base.glsl");
-    std::shared_ptr<GLSL_shader> shader = std::make_shared<GLSL_shader>(vert_shader.c_str(), frag_shader.c_str());
+    std::unique_ptr<GLSL_shader> shader = std::make_unique<GLSL_shader>(vert_shader.c_str(), frag_shader.c_str());
 
-    std::shared_ptr<camera> camera_handler(new camera(shader->get_handle(), renderer_handle.get_width(), renderer_handle.get_height()));
+    std::shared_ptr<camera> camera_handler = std::make_shared<camera>(shader->get_handle(), renderer_handle.get_width(), renderer_handle.get_height());
     bus.subscribe(camera_handler, etype::window_resize);
     bus.subscribe(camera_handler, etype::key_pressed);
     query_input_attribs(shader->get_handle());
