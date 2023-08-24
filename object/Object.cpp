@@ -93,22 +93,22 @@ object::object(const char* path)
 	// vertices
 	for (int i = 0; i < indices.size(); i += 3)
 	{
-		m_vertices.push_back(raw_v[indices[i] - 1].return_x());
-		m_vertices.push_back(raw_v[indices[i] - 1].return_y());
-		m_vertices.push_back(raw_v[indices[i] - 1].return_z());
+		m_vertices.push_back(raw_v[(indices[i] - 1)].return_x());
+		m_vertices.push_back(raw_v[(indices[i] - 1)].return_y());
+		m_vertices.push_back(raw_v[(indices[i] - 1)].return_z());
 	}
 	// uv
 	for (int i = 1; i < indices.size(); i += 3)
 	{
-		m_uv.push_back(raw_vt[indices[i] - 1].return_x());
-		m_uv.push_back(raw_vt[indices[i] - 1].return_y());
+		m_uv.push_back(raw_vt[(indices[i] - 1)].return_x());
+		m_uv.push_back(raw_vt[(indices[i] - 1)].return_y());
 	}
 	// normales
 	for (int i = 2; i < indices.size(); i += 3)
 	{
-		m_normales.push_back(raw_vn[indices[i] - 1].return_x());
-		m_normales.push_back(raw_vn[indices[i] - 1].return_y());
-		m_normales.push_back(raw_vn[indices[i] - 1].return_z());
+		m_normales.push_back(raw_vn[(indices[i] - 1)].return_x());
+		m_normales.push_back(raw_vn[(indices[i] - 1)].return_y());
+		m_normales.push_back(raw_vn[(indices[i] - 1)].return_z());
 	}
 }
 
