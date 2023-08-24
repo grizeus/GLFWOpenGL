@@ -428,3 +428,10 @@ void object::set_colors(vec_glfloat& colors)
 		m_colors.clear();
 	m_colors = colors; 
 }
+
+void object::set_uv(vec_glfloat& uv)
+{
+	if (!m_uv.empty())
+		m_uv.clear();
+	m_uv = uv;
+}

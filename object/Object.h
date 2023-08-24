@@ -29,6 +29,7 @@ public:
 	void draw();
 	void set_vertices(vec_glfloat& verts);
 	void set_colors(vec_glfloat& colors);
+	void set_uv(vec_glfloat& uv);
 	inline void set_texture(GLuint texture) { m_texture = texture; }
 private:
 	vec_glfloat m_vertices;
